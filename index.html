@@ -6,12 +6,12 @@
     <title>XOR VPN</title>
     <style>
         :root {
-            --bg: #0a0a0c;
-            --card: #161618;
+            --bg: #050505;
+            --card: #121214;
             --primary: #00d4ff;
             --accent: #9440ff;
             --text: #ffffff;
-            --text-dim: #888;
+            --text-dim: #666;
             --green: #00ff66;
             --drawer-width: 280px;
         }
@@ -32,7 +32,7 @@
             justify-content: space-between;
             align-items: center;
             background: var(--bg);
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1a1a1a;
             position: relative;
             z-index: 1001;
         }
@@ -44,6 +44,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .burger {
@@ -82,51 +83,64 @@
         .section { display: none; }
         .section.active { display: block; }
 
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #222; }
-        .card-title { font-weight: 800; font-size: 13px; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; }
-
-        .server-box {
-            background: #000; border-radius: 14px; padding: 12px 15px;
-            margin-bottom: 12px; display: flex; justify-content: space-between;
-            align-items: center; border: 1px solid #111;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
 
-        .server-info b { display: block; font-size: 13px; margin-bottom: 2px; }
-        .server-info span { font-size: 9px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        .node-card {
+            background: var(--card);
+            border: 1px solid #222;
+            border-radius: 18px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .node-icon {
+            width: 36px; height: 36px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 8px; color: var(--primary); font-size: 10px; font-weight: 900;
+        }
+
+        .node-name { font-size: 12px; font-weight: 800; margin-bottom: 2px; text-transform: uppercase; }
+        .node-type { font-size: 9px; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
 
         .copy-btn {
-            background: var(--primary); border: none;
-            width: 44px; height: 44px; border-radius: 12px;
-            cursor: pointer; position: relative;
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 900;
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: 0.3s;
         }
 
+        .copy-btn.success { background: var(--green); }
+
         .check-icon {
-            position: absolute; width: 22px; height: 22px;
-            stroke: #000; stroke-width: 3; fill: none;
-            stroke-dasharray: 24; stroke-dashoffset: 24;
-            transition: 0.4s; opacity: 0;
+            display: none;
+            width: 14px; height: 14px;
+            stroke: #000; stroke-width: 4; fill: none;
         }
 
-        .copy-btn.success { background: var(--green); transform: scale(1.05); }
-        .copy-btn.success .check-icon { opacity: 1; stroke-dashoffset: 0; }
-        .copy-btn.success .btn-label { opacity: 0; }
+        .copy-btn.success .check-icon { display: block; }
+        .copy-btn.success span { display: none; }
 
-        .btn-label { font-weight: 900; font-size: 9px; color: #000; }
+        .lang-sw { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 5px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+        .hidden-data { position: absolute; left: -9999px; visibility: hidden; }
 
-        .social-link {
-            display: flex; align-items: center; justify-content: center;
-            width: 100%; padding: 16px; border-radius: 14px;
-            text-decoration: none; color: #fff; font-weight: 800;
-            margin-bottom: 12px; font-size: 14px;
-        }
-        .tg-color { background: #24A1DE; }
-        .ds-color { background: #5865F2; }
-
-        .lang-sw { background: #222; border: 1px solid #333; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
-        
-        .hidden-conf { position: absolute; left: -9999px; visibility: hidden; }
+        @media (max-width: 350px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -135,7 +149,7 @@
 
 <header>
     <div class="logo">XOR VPN</div>
-    <div style="display: flex; align-items: center; gap: 15px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
         <button class="lang-sw" id="l-btn">EN</button>
         <div class="burger" id="burger">
             <span></span><span></span><span></span>
@@ -146,45 +160,51 @@
 <div class="drawer" id="drawer">
     <div class="drawer-item" data-target="tab-vpn" id="m1">VPN СЕРВЕРЫ</div>
     <div class="drawer-item" data-target="tab-soc" id="m2">СОЦ. СЕТИ</div>
-    <div class="drawer-item" data-target="tab-tut" id="m3">ИНСТРУКЦИЯ</div>
 </div>
 
 <div class="content">
     <div id="tab-vpn" class="section active">
-        <div class="card">
-            <div class="card-title" id="h-vpn">СПИСОК УЗЛОВ</div>
-            <div class="server-box">
-                <div class="server-info"><b id="loc1">ГЕРМАНИЯ (FRA)</b><span>REALITY TCP</span><div class="hidden-conf" id="c1">vless://78170c56-f85a-4e2a-89a1-5d9f04128f85@95.161.22.10:443?security=reality&sni=google.com&fp=chrome&pbk=In8...</div></div>
-                <button class="copy-btn" onclick="copyOldWay('c1', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+        <div class="grid">
+            <div class="node-card">
+                <div class="node-icon">GER</div>
+                <div class="node-name" id="loc1">ГЕРМАНИЯ</div>
+                <div class="node-type">REALITY TCP</div>
+                <div class="hidden-data" id="c1">vless://78170c56-f85a-4e2a-89a1-5d9f04128f85@95.161.22.10:443?security=reality&sni=google.com&fp=chrome&pbk=In8...</div>
+                <button class="copy-btn" onclick="copy('c1', this)"><span>COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
             </div>
-            <div class="server-box">
-                <div class="server-info"><b id="loc2">США (NYC)</b><span>VLESS WS</span><div class="hidden-conf" id="c2">vless://f47ac10b-58cc-4372-a567-0e02b2c3d479@104.21.x.x:443?path=/x0r&security=tls&sni=cloudflare.com...</div></div>
-                <button class="copy-btn" onclick="copyOldWay('c2', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+            <div class="node-card">
+                <div class="node-icon">USA</div>
+                <div class="node-name" id="loc2">США (NYC)</div>
+                <div class="node-type">VLESS WS</div>
+                <div class="hidden-data" id="c2">vless://f47ac10b-58cc-4372-a567-0e02b2c3d479@104.21.x.x:443?path=/x0r&security=tls&sni=cloudflare.com...</div>
+                <button class="copy-btn" onclick="copy('c2', this)"><span>COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
             </div>
-            <div class="server-box">
-                <div class="server-info"><b id="loc3">НИДЕРЛАНДЫ (AMS)</b><span>SS-2022</span><div class="hidden-conf" id="c3">ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo0YmY5YjFhMS04YmY5LTRmYjktYWJmOS04YmY5NGJmOWIxYTE=@185.200.1.1:8388</div></div>
-                <button class="copy-btn" onclick="copyOldWay('c3', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+            <div class="node-card">
+                <div class="node-icon">NED</div>
+                <div class="node-name" id="loc3">НИДЕРЛАНДЫ</div>
+                <div class="node-type">SS-2022</div>
+                <div class="hidden-data" id="c3">ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo0YmY5YjFhMS04YmY5LTRmYjktYWJmOS04YmY5NGJmOWIxYTE=@185.200.1.1:8388</div>
+                <button class="copy-btn" onclick="copy('c3', this)"><span>COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+            </div>
+            <div class="node-card">
+                <div class="node-icon">SGP</div>
+                <div class="node-name" id="loc4">СИНГАПУР</div>
+                <div class="node-type">REALITY GRPC</div>
+                <div class="hidden-data" id="c4">vless://uuid@143.198.x.x:443?security=reality&sni=microsoft.com&fp=safari&type=grpc...</div>
+                <button class="copy-btn" onclick="copy('c4', this)"><span>COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
             </div>
         </div>
     </div>
 
     <div id="tab-soc" class="section">
-        <div class="card">
-            <div class="card-title" id="h-soc">НАШИ СООБЩЕСТВА</div>
-            <a href="#" class="social-link tg-color">Telegram Channel</a>
-            <a href="#" class="social-link ds-color">Discord Support</a>
-        </div>
-    </div>
-
-    <div id="tab-tut" class="section">
-        <div class="card">
-            <div class="card-title">КАК ИСПОЛЬЗОВАТЬ?</div>
-            <p style="font-size: 13px; color: var(--text-dim); line-height: 1.6;">
-                1. Нажмите кнопку COPY напротив нужного сервера.<br>
-                2. Откройте приложение (v2rayNG или аналоги).<br>
-                3. Нажмите "Импорт из буфера обмена".<br>
-                4. Подключитесь.
-            </p>
+        <div class="node-card" style="width: 100%;">
+            <div class="node-name" style="margin-bottom: 15px;">COMMUNITY</div>
+            <a href="https://t.me/X0RCrew" style="text-decoration: none; width: 100%; margin-bottom: 10px;">
+                <div class="copy-btn" style="background: #24A1DE; color: #fff;">TELEGRAM</div>
+            </a>
+            <a href="https://discord.gg/hCQ6wsCFP" style="text-decoration: none; width: 100%;">
+                <div class="copy-btn" style="background: #5865F2; color: #fff;">DISCORD</div>
+            </a>
         </div>
     </div>
 </div>
@@ -192,8 +212,8 @@
 <script>
     const state = { lang: 'ru' };
     const dict = {
-        ru: { m1: "VPN СЕРВЕРЫ", m2: "СОЦ. СЕТИ", m3: "ИНСТРУКЦИЯ", hV: "СПИСОК УЗЛОВ", hS: "НАШИ СООБЩЕСТВА", loc1: "ГЕРМАНИЯ (FRA)", loc2: "США (NYC)", loc3: "НИДЕРЛАНДЫ (AMS)", lBtn: "EN" },
-        en: { m1: "VPN SERVERS", m2: "SOCIAL", m3: "TUTORIAL", hV: "NODE LIST", hS: "OUR COMMUNITY", loc1: "GERMANY (FRA)", loc2: "USA (NYC)", loc3: "NETHERLANDS (AMS)", lBtn: "RU" }
+        ru: { m1: "VPN СЕРВЕРЫ", m2: "СОЦ. СЕТИ", l1: "ГЕРМАНИЯ", l2: "США (NYC)", l3: "НИДЕРЛАНДЫ", l4: "СИНГАПУР", lBtn: "EN" },
+        en: { m1: "VPN SERVERS", m2: "SOCIAL", l1: "GERMANY", l2: "USA (NYC)", l3: "NETHERLANDS", l4: "SINGAPORE", lBtn: "RU" }
     };
 
     const burger = document.getElementById('burger');
@@ -201,58 +221,15 @@
     const overlay = document.getElementById('overlay');
     const lBtn = document.getElementById('l-btn');
 
+    burger.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+
     function toggleMenu() {
         drawer.classList.toggle('active');
         overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
     }
 
-    burger.onclick = toggleMenu;
-    overlay.onclick = toggleMenu;
-
     document.querySelectorAll('.drawer-item').forEach(item => {
         item.onclick = () => {
             const target = item.getAttribute('data-target');
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(target).classList.add('active');
-            toggleMenu();
-        }
-    });
-
-    lBtn.onclick = () => {
-        state.lang = state.lang === 'ru' ? 'en' : 'ru';
-        const d = dict[state.lang];
-        document.getElementById('m1').innerText = d.m1;
-        document.getElementById('m2').innerText = d.m2;
-        document.getElementById('m3').innerText = d.m3;
-        document.getElementById('h-vpn').innerText = d.hV;
-        document.getElementById('h-soc').innerText = d.hS;
-        document.getElementById('loc1').innerText = d.loc1;
-        document.getElementById('loc2').innerText = d.loc2;
-        document.getElementById('loc3').innerText = d.loc3;
-        lBtn.innerText = d.lBtn;
-    };
-
-    // СТАРЫЙ МЕТОД КОПИРОВАНИЯ + АНИМАЦИЯ ГАЛОЧКИ
-    function copyOldWay(id, btn) {
-        const text = document.getElementById(id).innerText;
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        ta.setSelectionRange(0, 99999);
-        
-        try {
-            document.execCommand('copy');
-            btn.classList.add('success');
-            setTimeout(() => btn.classList.remove('success'), 1500);
-        } catch (err) {
-            console.error("Copy failed");
-        }
-        document.body.removeChild(ta);
-    }
-</script>
-</body>
-</html>
