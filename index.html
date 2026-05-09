@@ -233,3 +233,37 @@
         item.onclick = () => {
             const target = item.getAttribute('data-target');
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(target).classList.add('active');
+            toggleMenu();
+        }
+    });
+
+    lBtn.onclick = () => {
+        state.lang = state.lang === 'ru' ? 'en' : 'ru';
+        const d = dict[state.lang];
+        document.getElementById('m1').innerText = d.m1;
+        document.getElementById('m2').innerText = d.m2;
+        document.getElementById('loc1').innerText = d.l1;
+        document.getElementById('loc2').innerText = d.l2;
+        document.getElementById('loc3').innerText = d.l3;
+        document.getElementById('loc4').innerText = d.l4;
+        lBtn.innerText = d.lBtn;
+    };
+
+    function copy(id, btn) {
+        const text = document.getElementById(id).innerText;
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed"; ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        try {
+            document.execCommand('copy');
+            btn.classList.add('success');
+            setTimeout(() => btn.classList.remove('success'), 1500);
+        } catch (e) {}
+        document.body.removeChild(ta);
+    }
+</script>
+</body>
+</html>
