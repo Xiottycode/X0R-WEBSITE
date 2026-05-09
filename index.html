@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XOR</title>
+
+    <!-- МЕТА-ТЕГИ ДЛЯ СОЦСЕТЕЙ -->
+    <meta property="og:title" content="XOR — Community & Tools">
+    <meta property="og:description" content="Telegram, Discord, Crypto Bot. Всё в одном месте.">
+    <meta property="og:image" content="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png">
+    <meta property="og:url" content="https://x0r.app">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="XOR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="XOR — Community & Tools">
+    <meta name="twitter:description" content="Telegram, Discord, Crypto Bot. Всё в одном месте.">
+    <meta name="twitter:image" content="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png">
+    <meta name="theme-color" content="#ff1a1a">
+
     <style>
         :root {
             --bg: #050505;
@@ -14,6 +28,85 @@
             --drawer-width: 280px;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+
+        @media (hover: hover) and (pointer: fine) {
+            * { cursor: none !important; }
+            a, button, .drawer-item, .link-btn, .lang-sw, .share-btn { cursor: none !important; }
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 20px; height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+            mix-blend-mode: difference;
+            display: none;
+        }
+        .custom-cursor-dot {
+            position: fixed;
+            width: 4px; height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .custom-cursor, .custom-cursor-dot { display: block; }
+        }
+        .custom-cursor.hover { width: 40px; height: 40px; border-color: #ff4444; }
+
+        /* ПРЕДЗАГРУЗЧИК */
+        .preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #050505;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .preloader-logo {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            animation: preGlitch 1.5s infinite;
+        }
+        .preloader-bar-bg {
+            width: 200px; height: 3px;
+            background: #222;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .preloader-bar {
+            width: 0%; height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        .preloader-percent {
+            color: var(--primary);
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+        @keyframes preGlitch {
+            0%, 90%, 100% { transform: translate(0); opacity: 1; }
+            92% { transform: translate(-3px, 0); opacity: 0.7; }
+            96% { transform: translate(3px, 0); opacity: 0.9; }
+        }
 
         body {
             background-color: #050505;
@@ -56,56 +149,65 @@
             z-index: 1001;
         }
 
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .logo-group { display: flex; align-items: center; gap: 6px; position: relative; }
+        .logo-glitch {
+            font-size: 20px; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 3px; color: var(--primary);
+            position: relative; animation: glitch 3s infinite;
         }
-        .logo {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            animation: logoGlow 2s ease-in-out infinite;
+        .logo-glitch::before, .logo-glitch::after {
+            content: 'XOR'; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; opacity: 0;
         }
-        @keyframes logoGlow {
-            0%, 100% { text-shadow: 0 0 10px rgba(255, 26, 26, 0.4); }
-            50% { text-shadow: 0 0 25px rgba(255, 26, 26, 0.8), 0 0 50px rgba(255, 26, 26, 0.4); }
+        .logo-glitch::before {
+            color: #00ffff; animation: glitchTop 3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
         }
-
+        .logo-glitch::after {
+            color: #ff00ff; animation: glitchBottom 3s infinite;
+            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+        }
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-2px, 1px); }
+            94% { transform: translate(2px, -1px); }
+            96% { transform: translate(-1px, -1px); }
+            98% { transform: translate(1px, 1px); }
+        }
+        @keyframes glitchTop {
+            0%, 90%, 100% { opacity: 0; transform: translate(0); }
+            92% { opacity: 0.8; transform: translate(-3px, -1px); }
+            96% { opacity: 0; transform: translate(3px, 1px); }
+        }
+        @keyframes glitchBottom {
+            0%, 90%, 100% { opacity: 0; transform: translate(0); }
+            94% { opacity: 0.8; transform: translate(3px, 1px); }
+            98% { opacity: 0; transform: translate(-3px, -1px); }
+        }
         .logo-icon {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-            animation: iconPulse 3s ease-in-out infinite;
+            width: 28px; height: 28px; object-fit: contain;
+            animation: iconGlitch 3s infinite;
         }
-        @keyframes iconPulse {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
+        @keyframes iconGlitch {
+            0%, 90%, 100% { transform: translate(0); opacity: 1; }
+            92% { transform: translate(-3px, 0); opacity: 0.7; }
+            94% { transform: translate(3px, 0); opacity: 0.9; }
+            96% { transform: translate(-1px, -1px); opacity: 0.8; }
+            98% { transform: translate(1px, 1px); opacity: 1; }
         }
 
-        .burger {
-            width: 30px; height: 20px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            cursor: pointer;
-        }
-        .burger span {
-            display: block; height: 3px; width: 100%;
-            background: var(--primary); border-radius: 3px;
-        }
+        .burger { width: 30px; height: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .burger span { display: block; height: 3px; width: 100%; background: var(--primary); border-radius: 3px; }
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); display: none; z-index: 1002;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .drawer {
             position: fixed; top: 0; right: -280px;
             width: var(--drawer-width); height: 100%;
             background: rgba(10, 0, 0, 0.9);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             z-index: 1003;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 80px 20px;
@@ -114,10 +216,8 @@
         .drawer.active { right: 0; }
         .drawer-item {
             padding: 18px 0; font-weight: 700; font-size: 14px;
-            border-bottom: 1px solid rgba(255, 26, 26, 0.15); cursor: pointer;
-            text-transform: uppercase;
-            color: var(--primary);
-            transition: 0.3s;
+            border-bottom: 1px solid rgba(255, 26, 26, 0.15);
+            text-transform: uppercase; color: var(--primary); transition: 0.3s;
         }
 
         .content { padding: 20px; height: calc(100vh - 60px); overflow-y: auto; position: relative; z-index: 1; }
@@ -126,79 +226,71 @@
 
         .node-card {
             background: rgba(20, 0, 0, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 26, 26, 0.2);
-            border-radius: 20px;
-            padding: 25px 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            margin-bottom: 15px;
+            border-radius: 20px; padding: 25px 18px;
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; margin-bottom: 15px;
         }
-
         .emoji { font-size: 32px; margin-bottom: 8px; }
-
         .node-name {
-            font-size: 15px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            color: var(--primary);
-            letter-spacing: 1px;
+            font-size: 15px; font-weight: 800; margin-bottom: 10px;
+            text-transform: uppercase; color: var(--primary); letter-spacing: 1px;
         }
         .node-desc { font-size: 12px; color: #aaa; margin-bottom: 20px; line-height: 1.6; padding: 0 5px; }
-
         .link-btn {
-            width: 100%;
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            width: 100%; background: transparent; color: var(--primary);
+            border: 1px solid var(--primary); padding: 14px; border-radius: 12px;
+            font-size: 12px; font-weight: 800; display: flex;
+            align-items: center; justify-content: center; transition: 0.3s;
+            text-decoration: none; text-transform: uppercase; letter-spacing: 2px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 8px;
         }
         .link-btn:active { background: rgba(255, 26, 26, 0.15); transform: scale(0.96); }
 
+        /* ШАРИНГ-КНОПКИ */
+        .share-row {
+            display: flex; gap: 8px; width: 100%; margin-top: 5px;
+        }
+        .share-btn {
+            flex: 1; background: transparent; border: 1px solid #333;
+            color: #aaa; padding: 8px 0; border-radius: 8px;
+            font-size: 10px; font-weight: 700; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .share-btn:active { background: rgba(255, 26, 26, 0.1); border-color: var(--primary); color: var(--primary); }
+
         .lang-sw {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-size: 11px;
-            cursor: pointer;
+            background: transparent; border: 1px solid var(--primary);
+            color: var(--primary); padding: 6px 14px; border-radius: 8px;
+            font-weight: 800; font-size: 11px;
         }
     </style>
 </head>
 <body>
 
-<div class="bg-animation" id="bg-animation"></div>
+<!-- ПРЕДЗАГРУЗЧИК -->
+<div class="preloader" id="preloader">
+    <div class="preloader-logo">XOR</div>
+    <div class="preloader-bar-bg"><div class="preloader-bar" id="preloader-bar"></div></div>
+    <div class="preloader-percent" id="preloader-percent">0%</div>
+</div>
 
+<div class="custom-cursor" id="cursor"></div>
+<div class="custom-cursor-dot" id="cursor-dot"></div>
+
+<div class="bg-animation" id="bg-animation"></div>
 <div class="overlay" id="overlay"></div>
 
 <header>
     <div class="logo-group">
-        <span class="logo">XOR</span>
+        <span class="logo-glitch">XOR</span>
         <img class="logo-icon" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
         <button class="lang-sw" id="l-btn">EN</button>
-        <div class="burger" id="burger">
-            <span></span><span></span><span></span>
-        </div>
+        <div class="burger" id="burger"><span></span><span></span><span></span></div>
     </div>
 </header>
 
@@ -208,12 +300,18 @@
 
 <div class="content">
     <div id="tab-soc" class="section active">
-        
+
         <div class="node-card">
             <div class="emoji">📢</div>
             <div class="node-name" id="tg-title">TELEGRAM</div>
             <div class="node-desc" id="tg-desc">Чтобы попасть в основной канал, переходи в наш переходник и кидайте заявку в основной, там вы найдёте много интересного, а может даже полезного.</div>
             <a href="https://t.me/X0RCrew" class="link-btn">TELEGRAM</a>
+            <div class="share-row">
+                <button class="share-btn" onclick="share('tg')">TG</button>
+                <button class="share-btn" onclick="share('tw')">X</button>
+                <button class="share-btn" onclick="share('wa')">WA</button>
+                <button class="share-btn" onclick="share('cp')">COPY</button>
+            </div>
         </div>
 
         <div class="node-card">
@@ -221,6 +319,12 @@
             <div class="node-name" id="dc-title">DISCORD</div>
             <div class="node-desc" id="dc-desc">Есть какие-то вопросы либо проблемы? Обращайтесь в нашу техподдержку в Дискорде.</div>
             <a href="https://discord.gg/hCQ6wsCFP" class="link-btn">DISCORD</a>
+            <div class="share-row">
+                <button class="share-btn" onclick="share('tg')">TG</button>
+                <button class="share-btn" onclick="share('tw')">X</button>
+                <button class="share-btn" onclick="share('wa')">WA</button>
+                <button class="share-btn" onclick="share('cp')">COPY</button>
+            </div>
         </div>
 
         <div class="node-card">
@@ -228,75 +332,88 @@
             <div class="node-name" id="cb-title">CRYPTO BOT</div>
             <div class="node-desc" id="cb-desc">Хотите поддержать автора? Вот ссылка на мой Crypto Bot, буду рад всему ☺️</div>
             <a href="http://t.me/send?start=IV7NVlDyrFUr" class="link-btn">CRYPTO BOT</a>
+            <div class="share-row">
+                <button class="share-btn" onclick="share('tg')">TG</button>
+                <button class="share-btn" onclick="share('tw')">X</button>
+                <button class="share-btn" onclick="share('wa')">WA</button>
+                <button class="share-btn" onclick="share('cp')">COPY</button>
+            </div>
         </div>
 
     </div>
 </div>
 
 <script>
+    // ПРЕДЗАГРУЗЧИК
+    const preloader = document.getElementById('preloader');
+    const preloaderBar = document.getElementById('preloader-bar');
+    const preloaderPercent = document.getElementById('preloader-percent');
+    let loadPercent = 0;
+    const loadInterval = setInterval(() => {
+        loadPercent += Math.random() * 25 + 5;
+        if (loadPercent >= 100) {
+            loadPercent = 100;
+            preloaderBar.style.width = '100%';
+            preloaderPercent.textContent = '100%';
+            clearInterval(loadInterval);
+            setTimeout(() => preloader.classList.add('hidden'), 400);
+        } else {
+            preloaderBar.style.width = loadPercent + '%';
+            preloaderPercent.textContent = Math.floor(loadPercent) + '%';
+        }
+    }, 200);
+
+    // КУРСОР
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursor-dot');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursorDot.style.left = e.clientX + 'px';
+        cursorDot.style.top = e.clientY + 'px';
+    });
+    document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
+    document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
+    document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // ФОН
     const bg = document.getElementById('bg-animation');
     for (let i = 0; i < 12; i++) {
         const orb = document.createElement('div');
         orb.className = 'orb';
         const size = Math.random() * 120 + 60;
-        orb.style.width = size + 'px';
-        orb.style.height = size + 'px';
-        orb.style.left = Math.random() * 100 + '%';
-        orb.style.top = Math.random() * 100 + '%';
+        orb.style.width = size + 'px'; orb.style.height = size + 'px';
+        orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
         orb.style.animationDelay = Math.random() * 8 + 's';
         orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
         bg.appendChild(orb);
     }
 
+    // ГЕОЛОКАЦИЯ + ПЕРЕВОД
     const state = { lang: 'ru' };
     const dict = {
         ru: {
             m1: "СОЦ. СЕТИ",
-            tgTitle: "TELEGRAM",
-            tgDesc: "Чтобы попасть в основной канал, переходи в наш переходник и кидайте заявку в основной, там вы найдёте много интересного, а может даже полезного.",
-            dcTitle: "DISCORD",
-            dcDesc: "Есть какие-то вопросы либо проблемы? Обращайтесь в нашу техподдержку в Дискорде.",
-            cbTitle: "CRYPTO BOT",
-            cbDesc: "Хотите поддержать автора? Вот ссылка на мой Crypto Bot, буду рад всему ☺️",
+            tgTitle: "TELEGRAM", tgDesc: "Чтобы попасть в основной канал, переходи в наш переходник и кидайте заявку в основной, там вы найдёте много интересного, а может даже полезного.",
+            dcTitle: "DISCORD", dcDesc: "Есть какие-то вопросы либо проблемы? Обращайтесь в нашу техподдержку в Дискорде.",
+            cbTitle: "CRYPTO BOT", cbDesc: "Хотите поддержать автора? Вот ссылка на мой Crypto Bot, буду рад всему ☺️",
             lBtn: "EN"
         },
         en: {
             m1: "SOCIAL",
-            tgTitle: "TELEGRAM",
-            tgDesc: "To join our main channel, go through our gateway and send a request to the main channel. There you'll find a lot of interesting and maybe even useful stuff.",
-            dcTitle: "DISCORD",
-            dcDesc: "Have any questions or problems? Contact our support team on Discord.",
-            cbTitle: "CRYPTO BOT",
-            cbDesc: "Want to support the author? Here's a link to my Crypto Bot, I'd appreciate anything ☺️",
+            tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel. There you'll find a lot of interesting and maybe even useful stuff.",
+            dcTitle: "DISCORD", dcDesc: "Have any questions or problems? Contact our support team on Discord.",
+            cbTitle: "CRYPTO BOT", cbDesc: "Want to support the author? Here's a link to my Crypto Bot, I'd appreciate anything ☺️",
             lBtn: "RU"
         }
     };
 
-    const burger = document.getElementById('burger');
-    const drawer = document.getElementById('drawer');
-    const overlay = document.getElementById('overlay');
-    const lBtn = document.getElementById('l-btn');
-
-    burger.onclick = toggleMenu;
-    overlay.onclick = toggleMenu;
-
-    function toggleMenu() {
-        drawer.classList.toggle('active');
-        overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
-    }
-
-    document.querySelectorAll('.drawer-item').forEach(item => {
-        item.onclick = () => {
-            const target = item.getAttribute('data-target');
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(target).classList.add('active');
-            toggleMenu();
-        }
-    });
-
-    lBtn.onclick = () => {
-        state.lang = state.lang === 'ru' ? 'en' : 'ru';
-        const d = dict[state.lang];
+    function setLang(lang) {
+        state.lang = lang;
+        const d = dict[lang];
         document.getElementById('m1').innerText = d.m1;
         document.getElementById('tg-title').innerText = d.tgTitle;
         document.getElementById('tg-desc').innerText = d.tgDesc;
@@ -304,8 +421,52 @@
         document.getElementById('dc-desc').innerText = d.dcDesc;
         document.getElementById('cb-title').innerText = d.cbTitle;
         document.getElementById('cb-desc').innerText = d.cbDesc;
-        lBtn.innerText = d.lBtn;
+        document.getElementById('l-btn').innerText = d.lBtn;
+    }
+
+    // АВТО-ОПРЕДЕЛЕНИЕ ПО IP
+    fetch('https://ipapi.co/json/')
+        .then(r => r.json())
+        .then(data => {
+            const ruCountries = ['RU', 'BY', 'KZ', 'UA', 'AM', 'KG', 'UZ', 'TJ', 'MD', 'AZ', 'GE'];
+            setLang(ruCountries.includes(data.country_code) ? 'ru' : 'en');
+        })
+        .catch(() => setLang('ru'));
+
+    document.getElementById('l-btn').onclick = () => setLang(state.lang === 'ru' ? 'en' : 'ru');
+
+    // МЕНЮ
+    const burger = document.getElementById('burger');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    burger.onclick = overlay.onclick = () => {
+        drawer.classList.toggle('active');
+        overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
     };
+    document.querySelectorAll('.drawer-item').forEach(item => {
+        item.onclick = () => {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(item.dataset.target).classList.add('active');
+            drawer.classList.remove('active');
+            overlay.style.display = 'none';
+        };
+    });
+
+    // ШАРИНГ
+    function share(type) {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent('XOR — Community & Tools');
+        let link = '';
+        switch(type) {
+            case 'tg': link = `https://t.me/share/url?url=${url}&text=${text}`; break;
+            case 'tw': link = `https://x.com/intent/tweet?url=${url}&text=${text}`; break;
+            case 'wa': link = `https://wa.me/?text=${text}%20${url}`; break;
+            case 'cp':
+                navigator.clipboard.writeText(window.location.href);
+                return;
+        }
+        window.open(link, '_blank');
+    }
 </script>
 </body>
 </html>
