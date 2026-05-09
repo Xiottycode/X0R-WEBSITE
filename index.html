@@ -52,60 +52,77 @@
         }
         .custom-cursor.hover { width: 40px; height: 40px; border-color: #ff4444; }
 
-        /* PULL-TO-REFRESH */
-        .ptr-indicator {
-            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-            width: 50px; height: 50px; z-index: 2000;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.2s, transform 0.2s;
-            pointer-events: none;
+        /* СТАРЫЙ ПРЕДЗАГРУЗЧИК */
+        .preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505; z-index: 10000;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: opacity 0.5s, visibility 0.5s;
         }
-        .ptr-indicator.visible { opacity: 1; }
-        .ptr-indicator.refreshing { animation: ptrSpin 0.8s linear infinite; }
-        @keyframes ptrSpin { 100% { transform: translateX(-50%) rotate(360deg); } }
-        .ptr-ring {
-            width: 36px; height: 36px;
-            border: 3px solid transparent;
-            border-top-color: var(--primary);
-            border-radius: 50%;
+        .preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .preloader-logo {
+            font-size: 48px; font-weight: 900; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 6px;
+            animation: preGlitch 1.5s infinite;
+        }
+        .preloader-bar-bg {
+            width: 200px; height: 3px; background: #222;
+            border-radius: 3px; margin-top: 20px; overflow: hidden;
+        }
+        .preloader-bar {
+            width: 0%; height: 100%; background: var(--primary);
+            border-radius: 3px; transition: width 0.3s;
+        }
+        .preloader-percent {
+            color: var(--primary); font-size: 12px;
+            margin-top: 8px; font-weight: 700;
+        }
+        @keyframes preGlitch {
+            0%, 90%, 100% { transform: translate(0); opacity: 1; }
+            92% { transform: translate(-3px, 0); opacity: 0.7; }
+            96% { transform: translate(3px, 0); opacity: 0.9; }
         }
 
-        /* REFRESH-АНИМАЦИЯ (X → O → R → ЛОГО) */
-        .refresh-overlay {
+        /* ГЛИТЧ-ФИНАЛ ПОСЛЕ ЗАГРУЗКИ */
+        .glitch-finale {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505; z-index: 3000;
+            background: #050505; z-index: 9998;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             opacity: 0; visibility: hidden;
             transition: opacity 0.3s;
         }
-        .refresh-overlay.active { opacity: 1; visibility: visible; }
-        .refresh-letter {
-            font-size: 80px; font-weight: 900; color: var(--primary);
-            font-family: 'Press Start 2P', monospace;
-            opacity: 0; transform: scale(0.3);
-            transition: opacity 0.4s, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: absolute;
+        .glitch-finale.active { opacity: 1; visibility: visible; }
+        .glitch-finale-logo {
+            width: 180px; height: auto;
+            animation: finaleGlitch 0.3s infinite, finaleZoom 1.5s ease-in-out;
         }
-        .refresh-letter.show { opacity: 1; transform: scale(1); }
-        .refresh-letter.hide { opacity: 0; transform: scale(1.5); }
-        .refresh-logo {
-            width: 160px; height: auto; opacity: 0;
-            transform: scale(0) rotate(-180deg);
-            transition: opacity 0.6s, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: absolute;
+        .glitch-finale-laugh {
+            font-size: 30px; font-weight: 900; color: #ff1a1a;
+            margin-top: 20px; font-family: 'Press Start 2P', monospace;
+            animation: laughShake 0.4s ease-in-out infinite, finaleZoom 1.5s ease-in-out;
+            text-shadow: 0 0 20px rgba(255,26,26,0.8), 0 0 60px rgba(255,26,26,0.5);
+            opacity: 0;
+            transition: opacity 0.5s;
         }
-        .refresh-logo.show { opacity: 1; transform: scale(1) rotate(0deg); }
-        .refresh-laugh {
-            font-size: 24px; color: #ff4444; opacity: 0;
-            position: absolute; margin-top: 140px;
-            transition: opacity 0.4s;
+        .glitch-finale-laugh.show { opacity: 1; }
+        @keyframes finaleGlitch {
+            0% { transform: translate(0); opacity: 1; }
+            25% { transform: translate(-8px, 3px); opacity: 0.6; }
+            50% { transform: translate(8px, -3px); opacity: 0.9; }
+            75% { transform: translate(-4px, -2px); opacity: 0.5; }
+            100% { transform: translate(4px, 2px); opacity: 1; }
         }
-        .refresh-laugh.show { opacity: 1; animation: laughShake 0.5s ease-in-out; }
+        @keyframes finaleZoom {
+            0% { transform: scale(0.3); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(0); opacity: 0; }
+        }
         @keyframes laughShake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px) rotate(-5deg); }
-            75% { transform: translateX(5px) rotate(5deg); }
+            25% { transform: translateX(-6px) rotate(-3deg); }
+            75% { transform: translateX(6px) rotate(3deg); }
         }
 
         body {
@@ -253,14 +270,17 @@
 </head>
 <body>
 
-<!-- PULL-TO-REFRESH ИНДИКАТОР -->
-<div class="ptr-indicator" id="ptr-indicator"><div class="ptr-ring"></div></div>
+<!-- ПРЕДЗАГРУЗЧИК -->
+<div class="preloader" id="preloader">
+    <div class="preloader-logo">XOR</div>
+    <div class="preloader-bar-bg"><div class="preloader-bar" id="preloader-bar"></div></div>
+    <div class="preloader-percent" id="preloader-percent">0%</div>
+</div>
 
-<!-- REFRESH АНИМАЦИЯ -->
-<div class="refresh-overlay" id="refresh-overlay">
-    <span class="refresh-letter" id="refresh-letter"></span>
-    <img class="refresh-logo" id="refresh-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
-    <span class="refresh-laugh" id="refresh-laugh">ХА-ХА-ХА!</span>
+<!-- ГЛИТЧ-ФИНАЛ -->
+<div class="glitch-finale" id="glitch-finale">
+    <img class="glitch-finale-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
+    <div class="glitch-finale-laugh" id="glitch-finale-laugh">ХА-ХА-ХА!</div>
 </div>
 
 <div class="custom-cursor" id="cursor"></div>
@@ -329,6 +349,11 @@
     </div>
 </div>
 
+<!-- СКРЫТЫЙ АУДИО -->
+<audio id="laugh-audio" preload="auto">
+    <source src="https://limewire.com/d/j1DJP#xnPjtlSzJi" type="audio/mpeg">
+</audio>
+
 <script>
     // КУРСОР
     const cursor = document.getElementById('cursor');
@@ -355,6 +380,49 @@
         orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
         bg.appendChild(orb);
     }
+
+    // ПРЕДЗАГРУЗЧИК
+    const preloader = document.getElementById('preloader');
+    const preloaderBar = document.getElementById('preloader-bar');
+    const preloaderPercent = document.getElementById('preloader-percent');
+    const glitchFinale = document.getElementById('glitch-finale');
+    const glitchLaugh = document.getElementById('glitch-finale-laugh');
+    const laughAudio = document.getElementById('laugh-audio');
+
+    let loadPercent = 0;
+    const loadInterval = setInterval(() => {
+        loadPercent += Math.random() * 20 + 5;
+        if (loadPercent >= 100) {
+            loadPercent = 100;
+            preloaderBar.style.width = '100%';
+            preloaderPercent.textContent = '100%';
+            clearInterval(loadInterval);
+
+            // ЗАПУСК ГЛИТЧ-ФИНАЛА
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                glitchFinale.classList.add('active');
+                
+                // ПРОБУЕМ ЗАПУСТИТЬ ЗВУК
+                laughAudio.play().catch(() => {
+                    // Автоплей заблокирован браузером — нужен клик
+                    console.log('Click anywhere to play sound');
+                });
+
+                // ПОКАЗЫВАЕМ ХА-ХА-ХА ЧЕРЕЗ 0.5 СЕК
+                setTimeout(() => glitchLaugh.classList.add('show'), 500);
+
+                // УБИРАЕМ ФИНАЛ ЧЕРЕЗ 2 СЕК
+                setTimeout(() => {
+                    glitchFinale.classList.remove('active');
+                    glitchLaugh.classList.remove('show');
+                }, 2500);
+            }, 300);
+        } else {
+            preloaderBar.style.width = loadPercent + '%';
+            preloaderPercent.textContent = Math.floor(loadPercent) + '%';
+        }
+    }, 250);
 
     // ПЕРЕВОД + ГЕОЛОКАЦИЯ
     const state = { lang: 'ru' };
@@ -410,56 +478,6 @@
         if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
         const links = { tg: `https://t.me/share/url?url=${url}&text=${text}`, tw: `https://x.com/intent/tweet?url=${url}&text=${text}`, wa: `https://wa.me/?text=${text}%20${url}` };
         window.open(links[type], '_blank');
-    }
-
-    // PULL-TO-REFRESH
-    const ptrIndicator = document.getElementById('ptr-indicator');
-    const content = document.getElementById('content');
-    let pullStart = 0, pulling = false, refreshing = false;
-
-    document.addEventListener('touchstart', (e) => {
-        if (content.scrollTop <= 0 && !refreshing) { pullStart = e.touches[0].clientY; pulling = true; }
-    }, { passive: true });
-
-    document.addEventListener('touchmove', (e) => {
-        if (!pulling || refreshing) return;
-        const pullDist = e.touches[0].clientY - pullStart;
-        if (pullDist > 30) { ptrIndicator.classList.add('visible'); ptrIndicator.style.transform = `translateX(-50%) translateY(${Math.min(pullDist - 30, 60)}px)`; }
-    }, { passive: true });
-
-    document.addEventListener('touchend', () => {
-        if (!pulling) return;
-        pulling = false;
-        const pullDist = parseFloat(ptrIndicator.style.transform.replace(/[^0-9.]/g, '')) || 0;
-        if (pullDist > 40 && !refreshing) { doRefresh(); }
-        ptrIndicator.classList.remove('visible'); ptrIndicator.style.transform = 'translateX(-50%)';
-    });
-
-    function doRefresh() {
-        refreshing = true;
-        const overlay = document.getElementById('refresh-overlay');
-        const letter = document.getElementById('refresh-letter');
-        const logo = document.getElementById('refresh-logo');
-        const laugh = document.getElementById('refresh-laugh');
-
-        overlay.classList.add('active'); letter.classList.remove('show', 'hide'); logo.classList.remove('show'); laugh.classList.remove('show');
-
-        // X
-        letter.textContent = 'X'; letter.style.fontFamily = "'Press Start 2P', monospace";
-        setTimeout(() => letter.classList.add('show'), 100);
-        setTimeout(() => letter.classList.add('hide'), 700);
-        // O
-        setTimeout(() => { letter.textContent = 'O'; letter.classList.remove('show', 'hide'); }, 900);
-        setTimeout(() => letter.classList.add('show'), 1000);
-        setTimeout(() => letter.classList.add('hide'), 1600);
-        // R
-        setTimeout(() => { letter.textContent = 'R'; letter.classList.remove('show', 'hide'); }, 1800);
-        setTimeout(() => letter.classList.add('show'), 1900);
-        setTimeout(() => letter.classList.add('hide'), 2500);
-        // ЛОГО + СМЕХ
-        setTimeout(() => { letter.classList.remove('show', 'hide'); letter.textContent = ''; logo.classList.add('show'); laugh.classList.add('show'); }, 2800);
-        // ЗАВЕРШЕНИЕ
-        setTimeout(() => { overlay.classList.remove('active'); refreshing = false; }, 4200);
     }
 </script>
 </body>
