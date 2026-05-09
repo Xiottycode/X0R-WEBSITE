@@ -23,7 +23,6 @@
             overflow: hidden;
         }
 
-        /* АНИМИРОВАННЫЙ ФОН С ШАРИКАМИ */
         .bg-animation {
             position: fixed;
             top: 0; left: 0;
@@ -45,7 +44,7 @@
         }
 
         header {
-            padding: 15px 20px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -57,30 +56,33 @@
             z-index: 1001;
         }
 
-        /* ЛОГОТИП СО ШЛЯПОЙ */
-        .logo-wrapper {
-            position: relative;
-            display: inline-block;
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .logo {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 900;
             color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 3px;
-            position: relative;
-            z-index: 1;
+            animation: logoGlow 2s ease-in-out infinite;
         }
-        .hat {
-            position: absolute;
-            top: -28px;
-            left: -2px;
-            width: 50px;
-            height: auto;
-            z-index: 2;
-            pointer-events: none;
-            transform: rotate(-8deg);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        @keyframes logoGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 26, 26, 0.4); }
+            50% { text-shadow: 0 0 25px rgba(255, 26, 26, 0.8), 0 0 50px rgba(255, 26, 26, 0.4); }
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
         }
 
         .burger {
@@ -183,15 +185,14 @@
 </head>
 <body>
 
-<!-- АНИМИРОВАННЫЕ ШАРИКИ -->
 <div class="bg-animation" id="bg-animation"></div>
 
 <div class="overlay" id="overlay"></div>
 
 <header>
-    <div class="logo-wrapper">
-        <img class="hat" src="https://i.ibb.co/hJptP3BD/Picsart-26-05-10-01-27-19-295.png" alt="hat">
+    <div class="logo-group">
         <span class="logo">XOR</span>
+        <img class="logo-icon" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
         <button class="lang-sw" id="l-btn">EN</button>
@@ -208,7 +209,6 @@
 <div class="content">
     <div id="tab-soc" class="section active">
         
-        <!-- TELEGRAM -->
         <div class="node-card">
             <div class="emoji">📢</div>
             <div class="node-name" id="tg-title">TELEGRAM</div>
@@ -216,7 +216,6 @@
             <a href="https://t.me/X0RCrew" class="link-btn">TELEGRAM</a>
         </div>
 
-        <!-- DISCORD -->
         <div class="node-card">
             <div class="emoji">🛠</div>
             <div class="node-name" id="dc-title">DISCORD</div>
@@ -224,7 +223,6 @@
             <a href="https://discord.gg/hCQ6wsCFP" class="link-btn">DISCORD</a>
         </div>
 
-        <!-- CRYPTO BOT -->
         <div class="node-card">
             <div class="emoji">💎</div>
             <div class="node-name" id="cb-title">CRYPTO BOT</div>
@@ -236,7 +234,6 @@
 </div>
 
 <script>
-    // ГЕНЕРАЦИЯ ШАРИКОВ
     const bg = document.getElementById('bg-animation');
     for (let i = 0; i < 12; i++) {
         const orb = document.createElement('div');
@@ -251,7 +248,6 @@
         bg.appendChild(orb);
     }
 
-    // ПЕРЕВОД
     const state = { lang: 'ru' };
     const dict = {
         ru: {
