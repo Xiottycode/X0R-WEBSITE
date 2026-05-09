@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XOR BYPASS v8.0</title>
+    <title>XOR BYPASS</title>
     <style>
         :root {
             --bg: #0a0a0c;
@@ -115,8 +115,6 @@
 
         .btn-label { font-weight: 900; font-size: 9px; color: #000; }
 
-        .hidden-conf { position: absolute; left: -9999px; visibility: hidden; }
-
         .social-link {
             display: flex; align-items: center; justify-content: center;
             width: 100%; padding: 16px; border-radius: 14px;
@@ -125,8 +123,10 @@
         }
         .tg-color { background: #24A1DE; }
         .ds-color { background: #5865F2; }
+
+        .lang-sw { background: #222; border: 1px solid #333; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
         
-        .lang-sw { background: #222; border: 1px solid #333; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 11px; }
+        .hidden-conf { position: absolute; left: -9999px; visibility: hidden; }
     </style>
 </head>
 <body>
@@ -134,7 +134,7 @@
 <div class="overlay" id="overlay"></div>
 
 <header>
-    <div class="logo">XOR BYPASS</div>
+    <div class="logo">XOR VPN</div>
     <div style="display: flex; align-items: center; gap: 15px;">
         <button class="lang-sw" id="l-btn">EN</button>
         <div class="burger" id="burger">
@@ -146,41 +146,24 @@
 <div class="drawer" id="drawer">
     <div class="drawer-item" data-target="tab-vpn" id="m1">VPN СЕРВЕРЫ</div>
     <div class="drawer-item" data-target="tab-soc" id="m2">СОЦ. СЕТИ</div>
+    <div class="drawer-item" data-target="tab-tut" id="m3">ИНСТРУКЦИЯ</div>
 </div>
 
 <div class="content">
     <div id="tab-vpn" class="section active">
         <div class="card">
             <div class="card-title" id="h-vpn">СПИСОК УЗЛОВ</div>
-            
             <div class="server-box">
                 <div class="server-info"><b id="loc1">ГЕРМАНИЯ (FRA)</b><span>REALITY TCP</span><div class="hidden-conf" id="c1">vless://78170c56-f85a-4e2a-89a1-5d9f04128f85@95.161.22.10:443?security=reality&sni=google.com&fp=chrome&pbk=In8...</div></div>
-                <button class="copy-btn" onclick="runCopy('c1', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+                <button class="copy-btn" onclick="copyOldWay('c1', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
             </div>
-
             <div class="server-box">
                 <div class="server-info"><b id="loc2">США (NYC)</b><span>VLESS WS</span><div class="hidden-conf" id="c2">vless://f47ac10b-58cc-4372-a567-0e02b2c3d479@104.21.x.x:443?path=/x0r&security=tls&sni=cloudflare.com...</div></div>
-                <button class="copy-btn" onclick="runCopy('c2', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+                <button class="copy-btn" onclick="copyOldWay('c2', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
             </div>
-
             <div class="server-box">
-                <div class="server-info"><b id="loc3">НИДЕРЛАНДЫ (AMS)</b><span>SHADOWSOCKS-2022</span><div class="hidden-conf" id="c3">ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo0YmY5YjFhMS04YmY5LTRmYjktYWJmOS04YmY5NGJmOWIxYTE=@185.200.1.1:8388</div></div>
-                <button class="copy-btn" onclick="runCopy('c3', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
-            </div>
-
-            <div class="server-box">
-                <div class="server-info"><b id="loc4">СИНГАПУР (SGP)</b><span>REALITY GRPC</span><div class="hidden-conf" id="c4">vless://uuid@143.198.x.x:443?security=reality&sni=microsoft.com&fp=safari&type=grpc...</div></div>
-                <button class="copy-btn" onclick="runCopy('c4', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
-            </div>
-
-            <div class="server-box">
-                <div class="server-info"><b id="loc5">ФИНЛЯНДИЯ (HEL)</b><span>REALITY TCP</span><div class="hidden-conf" id="c5">vless://78170c56-f85a-4e2a-89a1-5d9f04128f85@95.216.x.x:443?security=reality&sni=google.com&fp=chrome...</div></div>
-                <button class="copy-btn" onclick="runCopy('c5', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
-            </div>
-
-            <div class="server-box">
-                <div class="server-info"><b id="loc6">ТУРЦИЯ (IST)</b><span>TROJAN TLS</span><div class="hidden-conf" id="c6">trojan://password@1.2.3.4:443?security=tls&sni=example.com...</div></div>
-                <button class="copy-btn" onclick="runCopy('c6', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
+                <div class="server-info"><b id="loc3">НИДЕРЛАНДЫ (AMS)</b><span>SS-2022</span><div class="hidden-conf" id="c3">ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo0YmY5YjFhMS04YmY5LTRmYjktYWJmOS04YmY5NGJmOWIxYTE=@185.200.1.1:8388</div></div>
+                <button class="copy-btn" onclick="copyOldWay('c3', this)"><span class="btn-label">COPY</span><svg class="check-icon" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"/></svg></button>
             </div>
         </div>
     </div>
@@ -188,8 +171,20 @@
     <div id="tab-soc" class="section">
         <div class="card">
             <div class="card-title" id="h-soc">НАШИ СООБЩЕСТВА</div>
-            <a href="https://t.me/X0RCrew" class="social-link tg-color">Telegram Channel</a>
-            <a href="https://discord.gg/hCQ6wsCFP" class="social-link ds-color">Discord Support</a>
+            <a href="#" class="social-link tg-color">Telegram Channel</a>
+            <a href="#" class="social-link ds-color">Discord Support</a>
+        </div>
+    </div>
+
+    <div id="tab-tut" class="section">
+        <div class="card">
+            <div class="card-title">КАК ИСПОЛЬЗОВАТЬ?</div>
+            <p style="font-size: 13px; color: var(--text-dim); line-height: 1.6;">
+                1. Нажмите кнопку COPY напротив нужного сервера.<br>
+                2. Откройте приложение (v2rayNG или аналоги).<br>
+                3. Нажмите "Импорт из буфера обмена".<br>
+                4. Подключитесь.
+            </p>
         </div>
     </div>
 </div>
@@ -197,8 +192,8 @@
 <script>
     const state = { lang: 'ru' };
     const dict = {
-        ru: { m1: "VPN СЕРВЕРЫ", m2: "СОЦ. СЕТИ", hV: "СПИСОК УЗЛОВ", hS: "НАШИ СООБЩЕСТВА", l1: "ГЕРМАНИЯ (FRA)", l2: "США (NYC)", l3: "НИДЕРЛАНДЫ (AMS)", l4: "СИНГАПУР (SGP)", l5: "ФИНЛЯНДИЯ (HEL)", l6: "ТУРЦИЯ (IST)", lBtn: "EN" },
-        en: { m1: "VPN SERVERS", m2: "SOCIAL", hV: "NODE LIST", hS: "OUR COMMUNITY", l1: "GERMANY (FRA)", l2: "USA (NYC)", l3: "NETHERLANDS (AMS)", l4: "SINGAPORE (SGP)", l5: "FINLAND (HEL)", l6: "TURKEY (IST)", lBtn: "RU" }
+        ru: { m1: "VPN СЕРВЕРЫ", m2: "СОЦ. СЕТИ", m3: "ИНСТРУКЦИЯ", hV: "СПИСОК УЗЛОВ", hS: "НАШИ СООБЩЕСТВА", loc1: "ГЕРМАНИЯ (FRA)", loc2: "США (NYC)", loc3: "НИДЕРЛАНДЫ (AMS)", lBtn: "EN" },
+        en: { m1: "VPN SERVERS", m2: "SOCIAL", m3: "TUTORIAL", hV: "NODE LIST", hS: "OUR COMMUNITY", loc1: "GERMANY (FRA)", loc2: "USA (NYC)", loc3: "NETHERLANDS (AMS)", lBtn: "RU" }
     };
 
     const burger = document.getElementById('burger');
@@ -206,13 +201,13 @@
     const overlay = document.getElementById('overlay');
     const lBtn = document.getElementById('l-btn');
 
-    burger.onclick = toggleMenu;
-    overlay.onclick = toggleMenu;
-
     function toggleMenu() {
         drawer.classList.toggle('active');
         overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
     }
+
+    burger.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
 
     document.querySelectorAll('.drawer-item').forEach(item => {
         item.onclick = () => {
@@ -228,60 +223,35 @@
         const d = dict[state.lang];
         document.getElementById('m1').innerText = d.m1;
         document.getElementById('m2').innerText = d.m2;
+        document.getElementById('m3').innerText = d.m3;
         document.getElementById('h-vpn').innerText = d.hV;
         document.getElementById('h-soc').innerText = d.hS;
-        document.getElementById('loc1').innerText = d.l1;
-        document.getElementById('loc2').innerText = d.l2;
-        document.getElementById('loc3').innerText = d.l3;
-        document.getElementById('loc4').innerText = d.l4;
-        document.getElementById('loc5').innerText = d.l5;
-        document.getElementById('loc6').innerText = d.l6;
+        document.getElementById('loc1').innerText = d.loc1;
+        document.getElementById('loc2').innerText = d.loc2;
+        document.getElementById('loc3').innerText = d.loc3;
         lBtn.innerText = d.lBtn;
     };
 
-    // ФУНКЦИЯ КОПИРОВАНИЯ С ПОДДЕРЖКОЙ ЛОКАЛЬНЫХ ФАЙЛОВ
-    async function runCopy(id, btn) {
+    // СТАРЫЙ МЕТОД КОПИРОВАНИЯ + АНИМАЦИЯ ГАЛОЧКИ
+    function copyOldWay(id, btn) {
         const text = document.getElementById(id).innerText;
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, 99999);
         
-        // 1. Прямой метод Clipboard API
-        try {
-            if (navigator.clipboard && window.isSecureContext) {
-                await navigator.clipboard.writeText(text);
-                showSuccess(btn);
-                return;
-            }
-        } catch (e) {}
-
-        // 2. Метод фокуса через Input (Работает в Chrome Android даже без HTTPS)
-        const inp = document.createElement('input');
-        inp.value = text;
-        inp.style.position = 'fixed';
-        inp.style.top = '50%';
-        inp.style.left = '50%';
-        inp.style.width = '1px';
-        inp.style.height = '1px';
-        inp.style.padding = '0';
-        inp.style.border = 'none';
-        inp.style.opacity = '0.01'; // Должен быть физически виден
-        document.body.appendChild(inp);
-        
-        inp.focus();
-        inp.select();
-        inp.setSelectionRange(0, 99999);
-
         try {
             document.execCommand('copy');
-            showSuccess(btn);
+            btn.classList.add('success');
+            setTimeout(() => btn.classList.remove('success'), 1500);
         } catch (err) {
-            console.error('Final fallback failed');
+            console.error("Copy failed");
         }
-        
-        document.body.removeChild(inp);
-    }
-
-    function showSuccess(btn) {
-        btn.classList.add('success');
-        setTimeout(() => btn.classList.remove('success'), 1500);
+        document.body.removeChild(ta);
     }
 </script>
 </body>
