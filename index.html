@@ -16,6 +16,7 @@
             font-family: -apple-system, system-ui, sans-serif;
             overflow: hidden; height: 100vh;
         }
+
         .preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 10000;
@@ -58,67 +59,81 @@
             flex-direction: column;
         }
         .glitch-overlay.active { display: flex; }
-        .glitch-logo {
-            width: 200px; z-index: 2;
-        }
+
+        /* ЛОГОТИП С КЛОНАМИ */
+        .glitch-logo-wrap { position: relative; z-index: 2; }
+        .glitch-logo { width: 200px; display: block; position: relative; z-index: 2; }
         .glitch-clone {
-            position: absolute; width: 200px; z-index: 1;
-            mix-blend-mode: screen; opacity: 0;
+            position: absolute; top: 0; left: 0; width: 200px; mix-blend-mode: screen;
         }
-        .glitch-clone.red {
-            filter: hue-rotate(0deg) saturate(3) brightness(1.5);
-            transform: translate(-15px, 0);
+        .glitch-clone.red  { filter: hue-rotate(0deg) saturate(3) brightness(1.5); }
+        .glitch-clone.cyan { filter: hue-rotate(180deg) saturate(3) brightness(1.5); }
+        .glitch-overlay.active .glitch-clone.red  { animation: gRed  0.1s infinite; }
+        .glitch-overlay.active .glitch-clone.cyan { animation: gCyan 0.12s infinite; }
+        @keyframes gRed {
+            0%,100%{ opacity:0; transform:translate(-10px,0) }
+            30%{ opacity:0.9; transform:translate(-25px,5px) }
+            60%{ opacity:0.3; transform:translate(-5px,-5px) }
+            90%{ opacity:0.8; transform:translate(-20px,3px) }
         }
-        .glitch-clone.cyan {
-            filter: hue-rotate(180deg) saturate(3) brightness(1.5);
-            transform: translate(15px, 0);
-        }
-        .glitch-overlay.active .glitch-clone.red {
-            animation: glitchRed 0.15s infinite;
-        }
-        .glitch-overlay.active .glitch-clone.cyan {
-            animation: glitchCyan 0.13s infinite;
-        }
-        @keyframes glitchRed {
-            0%, 100% { opacity: 0; transform: translate(-15px, 0); }
-            30% { opacity: 0.8; transform: translate(-25px, 5px); }
-            60% { opacity: 0.4; transform: translate(-10px, -5px); }
-            90% { opacity: 0.9; transform: translate(-20px, 2px); }
-        }
-        @keyframes glitchCyan {
-            0%, 100% { opacity: 0; transform: translate(15px, 0); }
-            20% { opacity: 0.7; transform: translate(25px, -5px); }
-            50% { opacity: 0.9; transform: translate(10px, 5px); }
-            70% { opacity: 0.3; transform: translate(20px, -2px); }
+        @keyframes gCyan {
+            0%,100%{ opacity:0; transform:translate(10px,0) }
+            20%{ opacity:0.8; transform:translate(25px,-5px) }
+            50%{ opacity:1; transform:translate(5px,5px) }
+            70%{ opacity:0.2; transform:translate(15px,-3px) }
         }
 
+        /* БЛОКИ */
         .glitch-blocks {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9998; display: none;
+            pointer-events: none; z-index: 9996; display: none;
         }
         .glitch-blocks.active { display: block; }
         .glitch-block {
-            position: absolute;
-            background: rgba(255,26,26,0.5);
+            position: absolute; background: rgba(255,26,26,0.6);
             animation: blockFlash 0.2s infinite;
         }
         @keyframes blockFlash {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 0.7; }
+            0%,100%{ opacity:0; transform:translateX(0) }
+            50%{ opacity:0.8; transform:translateX(30px) }
         }
 
+        /* SCANLINES */
         .scanlines {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9997; display: none;
+            pointer-events: none; z-index: 9995; display: none;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(255,26,26,0.04) 0px,
-                rgba(255,26,26,0.04) 2px,
+                rgba(255,26,26,0.06) 0px,
+                rgba(255,26,26,0.06) 2px,
                 transparent 2px,
                 transparent 4px
             );
         }
         .scanlines.active { display: block; }
+
+        /* КРАСНЫЙ ШУМ */
+        .glitch-noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9994; display: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+            background-size: 200px 200px;
+            mix-blend-mode: screen;
+        }
+        .glitch-noise.active { display: block; }
+
+        /* ВСПЫШКИ */
+        .glitch-flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9993; display: none;
+            background: rgba(255,0,0,0.3);
+            animation: flashBang 0.3s infinite;
+        }
+        .glitch-flash.active { display: block; }
+        @keyframes flashBang {
+            0%,100%{ opacity:0 }
+            50%{ opacity:0.5 }
+        }
 
         header {
             padding: 12px 20px; display: flex; justify-content: space-between;
@@ -195,12 +210,16 @@
 </div>
 
 <div class="glitch-overlay" id="glitch-overlay">
-    <img class="glitch-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
-    <img class="glitch-clone red" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
-    <img class="glitch-clone cyan" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
+    <div class="glitch-logo-wrap">
+        <img class="glitch-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
+        <img class="glitch-clone red"  src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
+        <img class="glitch-clone cyan" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
+    </div>
 </div>
 <div class="glitch-blocks" id="glitch-blocks"></div>
 <div class="scanlines" id="scanlines"></div>
+<div class="glitch-noise" id="glitch-noise"></div>
+<div class="glitch-flash" id="glitch-flash"></div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
 
@@ -271,18 +290,41 @@ const preloaderPercent = document.getElementById('preloader-percent');
 const glitchOverlay = document.getElementById('glitch-overlay');
 const glitchBlocks = document.getElementById('glitch-blocks');
 const scanlines = document.getElementById('scanlines');
+const glitchNoise = document.getElementById('glitch-noise');
+const glitchFlash = document.getElementById('glitch-flash');
 const laughAudio = document.getElementById('laugh-audio');
 
-// Генерируем глитч-блоки
-for (let i = 0; i < 12; i++) {
+// ГЛИТЧ-БЛОКИ ПО ВСЕМУ ЭКРАНУ
+for (let i = 0; i < 20; i++) {
     const block = document.createElement('div');
     block.className = 'glitch-block';
     block.style.left = Math.random() * 100 + '%';
     block.style.top = Math.random() * 100 + '%';
-    block.style.width = (Math.random() * 200 + 30) + 'px';
-    block.style.height = (Math.random() * 15 + 2) + 'px';
-    block.style.animationDelay = Math.random() * 0.2 + 's';
+    block.style.width = (Math.random() * 300 + 50) + 'px';
+    block.style.height = (Math.random() * 25 + 3) + 'px';
+    block.style.animationDelay = Math.random() * 0.3 + 's';
     glitchBlocks.appendChild(block);
+}
+
+function killGlitch() {
+    glitchOverlay.classList.remove('active');
+    glitchBlocks.classList.remove('active');
+    scanlines.classList.remove('active');
+    glitchNoise.classList.remove('active');
+    glitchFlash.classList.remove('active');
+}
+
+function startGlitch() {
+    preloader.classList.add('hidden');
+    glitchOverlay.classList.add('active');
+    glitchBlocks.classList.add('active');
+    scanlines.classList.add('active');
+    glitchNoise.classList.add('active');
+    glitchFlash.classList.add('active');
+    laughAudio.currentTime = 0;
+    laughAudio.play().catch(() => {});
+    laughAudio.onended = killGlitch;
+    setTimeout(killGlitch, 6000);
 }
 
 let loadPercent = 0;
@@ -299,27 +341,7 @@ const loadInterval = setInterval(() => {
         const enterBtn = document.createElement('div');
         enterBtn.className = 'enter-btn';
         enterBtn.textContent = 'ENTER';
-        enterBtn.onclick = () => {
-            enterBtn.remove();
-            preloader.classList.add('hidden');
-            glitchOverlay.classList.add('active');
-            glitchBlocks.classList.add('active');
-            scanlines.classList.add('active');
-            laughAudio.currentTime = 0;
-            laughAudio.play().catch(() => {});
-            laughAudio.onended = () => {
-                glitchOverlay.classList.remove('active');
-                glitchBlocks.classList.remove('active');
-                scanlines.classList.remove('active');
-            };
-            setTimeout(() => {
-                if (glitchOverlay.classList.contains('active')) {
-                    glitchOverlay.classList.remove('active');
-                    glitchBlocks.classList.remove('active');
-                    scanlines.classList.remove('active');
-                }
-            }, 5000);
-        };
+        enterBtn.onclick = () => { enterBtn.remove(); startGlitch(); };
         preloader.appendChild(enterBtn);
     } else {
         preloaderBar.style.width = loadPercent + '%';
@@ -327,7 +349,6 @@ const loadInterval = setInterval(() => {
     }
 }, 200);
 
-// ПЕРЕВОД
 const state = { lang: 'ru' };
 const dict = {
     ru: {
@@ -339,7 +360,7 @@ const dict = {
     },
     en: {
         m1: "SOCIAL",
-        tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel.",
+        tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request.",
         dcTitle: "DISCORD", dcDesc: "Have questions? Contact our support on Discord.",
         cbTitle: "CRYPTO BOT", cbDesc: "Want to support? Here's my Crypto Bot, appreciate anything ☺️",
         lBtn: "RU"
@@ -361,26 +382,17 @@ fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
 }).catch(() => setLang('ru'));
 document.getElementById('l-btn').onclick = () => setLang(state.lang === 'ru' ? 'en' : 'ru');
 
-// МЕНЮ
 const burger = document.getElementById('burger'), drawer = document.getElementById('drawer'), overlayBg = document.getElementById('overlay-bg');
-burger.onclick = () => {
-    drawer.classList.toggle('active');
-    overlayBg.classList.toggle('active');
-};
-overlayBg.onclick = () => {
-    drawer.classList.remove('active');
-    overlayBg.classList.remove('active');
-};
+burger.onclick = () => { drawer.classList.toggle('active'); overlayBg.classList.toggle('active'); };
+overlayBg.onclick = () => { drawer.classList.remove('active'); overlayBg.classList.remove('active'); };
 document.querySelectorAll('.drawer-item').forEach(item => {
     item.onclick = () => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(item.dataset.target).classList.add('active');
-        drawer.classList.remove('active');
-        overlayBg.classList.remove('active');
+        drawer.classList.remove('active'); overlayBg.classList.remove('active');
     };
 });
 
-// ШАРИНГ
 function share(type) {
     const url = encodeURIComponent(window.location.href), text = encodeURIComponent('XOR — Community & Tools');
     if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
