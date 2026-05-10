@@ -30,7 +30,7 @@
 
         @media (hover: hover) and (pointer: fine) {
             * { cursor: none !important; }
-            a, button, .drawer-item, .link-btn, .lang-sw, .share-btn { cursor: none !important; }
+            a, button, .drawer-item, .link-btn, .lang-sw, .share-btn, .enter-btn { cursor: none !important; }
         }
 
         .custom-cursor {
@@ -98,7 +98,7 @@
         .glitch-finale-logo {
             width: 200px; height: auto;
             filter: drop-shadow(0 0 30px rgba(255,26,26,0.8));
-            animation: finaleZoom 2s ease-in-out forwards;
+            animation: finaleZoom 2.5s ease-in-out forwards;
         }
         @keyframes finaleGlitch {
             0% { transform: translate(0); opacity: 1; }
@@ -379,10 +379,9 @@
 
 <script>
 // ████████████████████████████████████████████
-// ВЕСЬ JS В ОДНОМ ЭКЗЕМПЛЯРЕ — БЕЗ ДУБЛИКАТОВ
+// ЧИСТЫЙ JS — БЕЗ ДУБЛИКАТОВ
 // ████████████████████████████████████████████
 
-// КУРСОР
 const cursor = document.getElementById('cursor');
 const cursorDot = document.getElementById('cursor-dot');
 document.addEventListener('mousemove', (e) => {
@@ -391,12 +390,11 @@ document.addEventListener('mousemove', (e) => {
 });
 document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
 document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
-document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
+document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn, .enter-btn').forEach(el => {
     el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
 });
 
-// ФОН
 const bgAnim = document.getElementById('bg-animation');
 for (let i = 0; i < 12; i++) {
     const orb = document.createElement('div'); orb.className = 'orb';
@@ -408,7 +406,6 @@ for (let i = 0; i < 12; i++) {
     bgAnim.appendChild(orb);
 }
 
-// ПРЕДЗАГРУЗЧИК
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
@@ -417,7 +414,6 @@ const glitchScanlines = document.getElementById('glitch-scanlines');
 const glitchBlocks = document.getElementById('glitch-blocks');
 const laughAudio = document.getElementById('laugh-audio');
 
-// ГЛИТЧ-БЛОКИ
 for (let i = 0; i < 15; i++) {
     const block = document.createElement('div');
     block.className = 'glitch-block';
@@ -440,7 +436,7 @@ function startGlitchFinale() {
         glitchFinale.classList.remove('active');
         glitchScanlines.classList.remove('active');
         glitchBlocks.classList.remove('active');
-    }, 2000);
+    }, 2500);
 }
 
 let loadPercent = 0;
@@ -451,14 +447,39 @@ const loadInterval = setInterval(() => {
         preloaderBar.style.width = '100%';
         preloaderPercent.textContent = '100%';
         clearInterval(loadInterval);
-        setTimeout(startGlitchFinale, 400);
+
+        preloaderPercent.textContent = '';
+        preloaderBar.style.display = 'none';
+
+        const enterBtn = document.createElement('div');
+        enterBtn.className = 'enter-btn';
+        enterBtn.textContent = 'ENTER';
+        enterBtn.style.cssText = `
+            margin-top: 25px;
+            padding: 12px 40px;
+            border: 2px solid #ff1a1a;
+            color: #ff1a1a;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            cursor: pointer;
+            animation: preGlitch 1s infinite;
+            text-transform: uppercase;
+        `;
+        const launch = (e) => {
+            e.preventDefault();
+            enterBtn.remove();
+            startGlitchFinale();
+        };
+        enterBtn.addEventListener('click', launch);
+        enterBtn.addEventListener('touchend', launch);
+        preloader.appendChild(enterBtn);
     } else {
         preloaderBar.style.width = loadPercent + '%';
         preloaderPercent.textContent = Math.floor(loadPercent) + '%';
     }
 }, 250);
 
-// ПЕРЕВОД
 const state = { lang: 'ru' };
 const dict = {
     ru: {
@@ -492,7 +513,6 @@ fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
 }).catch(() => setLang('ru'));
 document.getElementById('l-btn').onclick = () => setLang(state.lang === 'ru' ? 'en' : 'ru');
 
-// МЕНЮ
 const burger = document.getElementById('burger'), drawer = document.getElementById('drawer'), overlay = document.getElementById('overlay');
 burger.onclick = overlay.onclick = () => {
     drawer.classList.toggle('active');
@@ -506,7 +526,6 @@ document.querySelectorAll('.drawer-item').forEach(item => {
     };
 });
 
-// ШАРИНГ
 function share(type) {
     const url = encodeURIComponent(window.location.href), text = encodeURIComponent('XOR — Community & Tools');
     if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
