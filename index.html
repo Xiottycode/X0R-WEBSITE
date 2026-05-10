@@ -51,78 +51,23 @@
             cursor: pointer; animation: glitch 1s infinite;
         }
 
-        /* ГЛИТЧ-ФИНАЛ */
-        .glitch-overlay {
+        /* ЗАПОЛНЕНИЕ ЭКРАНА ЛОГОТИПОМ */
+        .logo-flood {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 9999;
-            display: none; justify-content: center; align-items: center;
-            flex-direction: column;
+            display: none; flex-wrap: wrap; justify-content: center;
+            align-items: center; overflow: hidden;
         }
-        .glitch-overlay.active { display: flex; }
-
-        /* ЛОГОТИП С RGB-СДВИГОМ */
-        .glitch-logo-wrap { position: relative; z-index: 2; }
-        .glitch-logo { width: 200px; display: block; position: relative; z-index: 2; }
-        .glitch-clone {
-            position: absolute; top: 0; left: 0; width: 200px; mix-blend-mode: screen;
+        .logo-flood.active { display: flex; }
+        .logo-flood img {
+            width: 80px; height: 80px; object-fit: contain;
+            margin: 5px; opacity: 0;
+            animation: popIn 0.3s ease-out forwards;
         }
-        .glitch-clone.red  { filter: brightness(1.5); }
-        .glitch-clone.cyan { filter: brightness(1.5); }
-        .glitch-overlay.active .glitch-clone.red  { animation: gRed  0.08s infinite; }
-        .glitch-overlay.active .glitch-clone.cyan { animation: gCyan 0.1s infinite; }
-        @keyframes gRed {
-            0%,100%{ opacity:0.6; transform:translate(-8px,0) }
-            25%{ opacity:1; transform:translate(-30px,3px) }
-            50%{ opacity:0.4; transform:translate(-2px,-3px) }
-            75%{ opacity:0.9; transform:translate(-20px,1px) }
-        }
-        @keyframes gCyan {
-            0%,100%{ opacity:0.6; transform:translate(8px,0) }
-            25%{ opacity:1; transform:translate(30px,-3px) }
-            50%{ opacity:0.4; transform:translate(2px,3px) }
-            75%{ opacity:0.9; transform:translate(20px,-1px) }
-        }
-
-        /* SCANLINES ПЛОТНЫЕ */
-        .scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9995; display: none;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255,0,0,0.08) 0px,
-                rgba(255,0,0,0.08) 3px,
-                transparent 3px,
-                transparent 6px
-            );
-        }
-        .scanlines.active { display: block; }
-
-        /* ЦИФРОВОЙ ШУМ */
-        .glitch-noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9994; display: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-            background-size: 150px 150px;
-            mix-blend-mode: overlay;
-            animation: noiseShift 0.5s steps(5) infinite;
-        }
-        .glitch-noise.active { display: block; }
-        @keyframes noiseShift {
-            0% { background-position: 0 0; }
-            100% { background-position: 100px 100px; }
-        }
-
-        /* ГОРИЗОНТАЛЬНЫЕ БЛОКИ (СДВИГИ СТРОК) */
-        .glitch-slices {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9993; display: none;
-        }
-        .glitch-slices.active { display: block; }
-        .glitch-slice {
-            position: absolute; left: 0; width: 100%;
-            height: 12px;
-            background: rgba(255,0,0,0.3);
-            mix-blend-mode: screen;
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         header {
@@ -199,16 +144,7 @@
     <div class="preloader-percent" id="preloader-percent">0%</div>
 </div>
 
-<div class="glitch-overlay" id="glitch-overlay">
-    <div class="glitch-logo-wrap">
-        <img class="glitch-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
-        <img class="glitch-clone red"  src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
-        <img class="glitch-clone cyan" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
-    </div>
-</div>
-<div class="scanlines" id="scanlines"></div>
-<div class="glitch-noise" id="glitch-noise"></div>
-<div class="glitch-slices" id="glitch-slices"></div>
+<div class="logo-flood" id="logo-flood"></div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
 
@@ -276,39 +212,38 @@
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
-const glitchOverlay = document.getElementById('glitch-overlay');
-const scanlines = document.getElementById('scanlines');
-const glitchNoise = document.getElementById('glitch-noise');
-const glitchSlices = document.getElementById('glitch-slices');
+const logoFlood = document.getElementById('logo-flood');
 const laughAudio = document.getElementById('laugh-audio');
 
-// ГЛИТЧ-СДВИГИ СТРОК (как на пине)
-for (let i = 0; i < 8; i++) {
-    const slice = document.createElement('div');
-    slice.className = 'glitch-slice';
-    slice.style.top = (Math.random() * 90) + '%';
-    slice.style.height = (Math.random() * 20 + 6) + 'px';
-    slice.style.animationDelay = Math.random() * 0.3 + 's';
-    glitchSlices.appendChild(slice);
+const LOGO_URL = 'https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png';
+
+// ЗАПОЛНЯЕМ ЭКРАН ЛОГОТИПАМИ
+function floodScreen() {
+    const cols = Math.ceil(window.innerWidth / 90);
+    const rows = Math.ceil(window.innerHeight / 90);
+    const total = cols * rows;
+
+    for (let i = 0; i < total; i++) {
+        const img = document.createElement('img');
+        img.src = LOGO_URL;
+        img.style.animationDelay = (i * 0.02) + 's';
+        logoFlood.appendChild(img);
+    }
 }
 
-function killGlitch() {
-    glitchOverlay.classList.remove('active');
-    scanlines.classList.remove('active');
-    glitchNoise.classList.remove('active');
-    glitchSlices.classList.remove('active');
+function killFlood() {
+    logoFlood.classList.remove('active');
+    logoFlood.innerHTML = '';
 }
 
-function startGlitch() {
+function startFlood() {
     preloader.classList.add('hidden');
-    glitchOverlay.classList.add('active');
-    scanlines.classList.add('active');
-    glitchNoise.classList.add('active');
-    glitchSlices.classList.add('active');
+    floodScreen();
+    logoFlood.classList.add('active');
     laughAudio.currentTime = 0;
     laughAudio.play().catch(() => {});
-    laughAudio.onended = killGlitch;
-    setTimeout(killGlitch, 6000);
+    laughAudio.onended = killFlood;
+    setTimeout(killFlood, 5000);
 }
 
 let loadPercent = 0;
@@ -325,7 +260,7 @@ const loadInterval = setInterval(() => {
         const enterBtn = document.createElement('div');
         enterBtn.className = 'enter-btn';
         enterBtn.textContent = 'ENTER';
-        enterBtn.onclick = () => { enterBtn.remove(); startGlitch(); };
+        enterBtn.onclick = () => { enterBtn.remove(); startFlood(); };
         preloader.appendChild(enterBtn);
     } else {
         preloaderBar.style.width = loadPercent + '%';
