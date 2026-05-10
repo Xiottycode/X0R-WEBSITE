@@ -4,66 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XOR</title>
-
     <meta property="og:title" content="XOR — Community & Tools">
-    <meta property="og:description" content="Telegram, Discord, Crypto Bot. Всё в одном месте.">
+    <meta property="og:description" content="Telegram, Discord, Crypto Bot.">
     <meta property="og:image" content="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png">
-    <meta property="og:url" content="https://x0r.app">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="XOR">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="XOR — Community & Tools">
-    <meta name="twitter:description" content="Telegram, Discord, Crypto Bot. Всё в одном месте.">
-    <meta name="twitter:image" content="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png">
     <meta name="theme-color" content="#ff1a1a">
-
     <style>
-        :root {
-            --bg: #050505;
-            --card: rgba(20, 0, 0, 0.4);
-            --primary: #ff1a1a;
-            --text: #ffffff;
-            --text-dim: #999;
-            --drawer-width: 280px;
+        :root { --primary: #ff1a1a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #050505; color: #fff;
+            font-family: -apple-system, system-ui, sans-serif;
+            overflow: hidden; height: 100vh;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-
-        @media (hover: hover) and (pointer: fine) {
-            * { cursor: none !important; }
-            a, button, .drawer-item, .link-btn, .lang-sw, .share-btn, .enter-btn { cursor: none !important; }
-        }
-
-        .custom-cursor {
-            position: fixed; width: 20px; height: 20px;
-            border: 2px solid var(--primary); border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, border-color 0.2s;
-            mix-blend-mode: difference; display: none;
-        }
-        .custom-cursor-dot {
-            position: fixed; width: 4px; height: 4px;
-            background: var(--primary); border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); display: none;
-        }
-        @media (hover: hover) and (pointer: fine) {
-            .custom-cursor, .custom-cursor-dot { display: block; }
-        }
-        .custom-cursor.hover { width: 40px; height: 40px; border-color: #ff4444; }
-
         .preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 10000;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            transition: opacity 0.5s, visibility 0.5s;
         }
-        .preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .preloader.hidden { display: none; }
         .preloader-logo {
             font-size: 48px; font-weight: 900; color: var(--primary);
-            text-transform: uppercase; letter-spacing: 6px;
-            animation: preGlitch 1.5s infinite;
+            letter-spacing: 6px; animation: glitch 1s infinite;
         }
         .preloader-bar-bg {
             width: 200px; height: 3px; background: #222;
@@ -74,219 +36,105 @@
             border-radius: 3px; transition: width 0.3s;
         }
         .preloader-percent {
-            color: var(--primary); font-size: 12px;
-            margin-top: 8px; font-weight: 700;
-        }
-        @keyframes preGlitch {
-            0%, 90%, 100% { transform: translate(0); opacity: 1; }
-            92% { transform: translate(-3px, 0); opacity: 0.7; }
-            96% { transform: translate(3px, 0); opacity: 0.9; }
-        }
-
-        .glitch-finale {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505; z-index: 9998;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.2s;
-        }
-        .glitch-finale.active { opacity: 1; visibility: visible; }
-        .glitch-finale-inner {
-            text-align: center;
-            animation: finaleGlitch 0.15s infinite;
-        }
-        .glitch-finale-logo {
-            width: 200px; height: auto;
-            filter: drop-shadow(0 0 30px rgba(255,26,26,0.8));
-            animation: finaleZoom 2.5s ease-in-out forwards;
-        }
-        @keyframes finaleGlitch {
-            0% { transform: translate(0); opacity: 1; }
-            20% { transform: translate(-15px, 5px); opacity: 0.4; }
-            40% { transform: translate(15px, -5px); opacity: 0.9; }
-            60% { transform: translate(-8px, -3px); opacity: 0.3; }
-            80% { transform: translate(8px, 3px); opacity: 0.8; }
-            100% { transform: translate(0); opacity: 1; }
-        }
-        @keyframes finaleZoom {
-            0% { transform: scale(0.2); opacity: 0; }
-            30% { transform: scale(1.15); opacity: 1; }
-            60% { transform: scale(0.95); opacity: 1; }
-            100% { transform: scale(3); opacity: 0; }
-        }
-
-        .glitch-scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9997; pointer-events: none;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.2s;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255,26,26,0.03) 0px,
-                rgba(255,26,26,0.03) 2px,
-                transparent 2px,
-                transparent 4px
-            );
-        }
-        .glitch-scanlines.active { opacity: 1; visibility: visible; }
-
-        .glitch-blocks {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9996; pointer-events: none;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.2s;
-        }
-        .glitch-blocks.active { opacity: 1; visibility: visible; }
-        .glitch-block {
-            position: absolute;
-            background: rgba(255,26,26,0.6);
-            animation: blockGlitch 0.3s infinite;
-        }
-        @keyframes blockGlitch {
-            0%, 100% { opacity: 0; transform: translateX(0); }
-            50% { opacity: 0.8; transform: translateX(20px); }
-        }
-
-        body {
-            background-color: #050505; color: var(--text);
-            font-family: -apple-system, system-ui, sans-serif;
-            margin: 0; overflow: hidden;
-        }
-
-        .bg-animation {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: 0; pointer-events: none;
-        }
-        .orb {
-            position: absolute; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 26, 26, 0.4) 0%, rgba(255, 26, 26, 0) 70%);
-            animation: float 8s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
-            25% { transform: translateY(-30px) translateX(15px) scale(1.1); opacity: 0.5; }
-            50% { transform: translateY(-60px) translateX(-10px) scale(0.9); opacity: 0.2; }
-            75% { transform: translateY(-30px) translateX(-20px) scale(1.05); opacity: 0.4; }
-        }
-
-        header {
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 26, 26, 0.15);
-            position: relative; z-index: 1001;
-        }
-
-        .logo-group { display: flex; align-items: center; gap: 6px; position: relative; }
-        .logo-glitch {
-            font-size: 20px; font-weight: 900; text-transform: uppercase;
-            letter-spacing: 3px; color: var(--primary);
-            position: relative; animation: glitch 3s infinite;
-        }
-        .logo-glitch::before, .logo-glitch::after {
-            content: 'XOR'; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; opacity: 0;
-        }
-        .logo-glitch::before {
-            color: #00ffff; animation: glitchTop 3s infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-        }
-        .logo-glitch::after {
-            color: #ff00ff; animation: glitchBottom 3s infinite;
-            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+            color: var(--primary); font-size: 12px; margin-top: 8px; font-weight: 700;
         }
         @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); }
+            0%, 100% { transform: translate(0); }
             92% { transform: translate(-2px, 1px); }
-            94% { transform: translate(2px, -1px); }
-            96% { transform: translate(-1px, -1px); }
-            98% { transform: translate(1px, 1px); }
+            96% { transform: translate(2px, -1px); }
         }
-        @keyframes glitchTop {
-            0%, 90%, 100% { opacity: 0; transform: translate(0); }
-            92% { opacity: 0.8; transform: translate(-3px, -1px); }
-            96% { opacity: 0; transform: translate(3px, 1px); }
+        .enter-btn {
+            margin-top: 25px; padding: 12px 40px;
+            border: 2px solid var(--primary); color: var(--primary);
+            font-size: 16px; font-weight: 900; letter-spacing: 4px;
+            cursor: pointer; animation: glitch 1s infinite;
         }
-        @keyframes glitchBottom {
-            0%, 90%, 100% { opacity: 0; transform: translate(0); }
-            94% { opacity: 0.8; transform: translate(3px, 1px); }
-            98% { opacity: 0; transform: translate(-3px, -1px); }
+        .glitch-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505; z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+            flex-direction: column;
         }
-        .logo-icon {
-            width: 28px; height: 28px; object-fit: contain;
-            animation: iconGlitch 3s infinite;
+        .glitch-overlay.active { display: flex; }
+        .glitch-logo {
+            width: 200px; animation: shake 0.1s infinite;
         }
-        @keyframes iconGlitch {
-            0%, 90%, 100% { transform: translate(0); opacity: 1; }
-            92% { transform: translate(-3px, 0); opacity: 0.7; }
-            94% { transform: translate(3px, 0); opacity: 0.9; }
-            96% { transform: translate(-1px, -1px); opacity: 0.8; }
-            98% { transform: translate(1px, 1px); opacity: 1; }
+        @keyframes shake {
+            0% { transform: translate(0); }
+            25% { transform: translate(-10px, 5px); }
+            50% { transform: translate(10px, -5px); }
+            75% { transform: translate(-5px, -3px); }
+            100% { transform: translate(5px, 3px); }
         }
-
-        .burger { width: 30px; height: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; display: none;
+            background: repeating-linear-gradient(0deg, rgba(255,26,26,0.05) 0px, rgba(255,26,26,0.05) 2px, transparent 2px, transparent 4px);
+        }
+        .scanlines.active { display: block; }
+        header {
+            padding: 12px 20px; display: flex; justify-content: space-between;
+            align-items: center; background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,26,26,0.15);
+            position: relative; z-index: 1001;
+        }
+        .logo-group { display: flex; align-items: center; gap: 6px; }
+        .logo-text {
+            font-size: 20px; font-weight: 900; color: var(--primary);
+            letter-spacing: 3px; animation: glitch 3s infinite;
+        }
+        .logo-icon { width: 28px; height: 28px; animation: glitch 3s infinite; }
+        .burger { width: 30px; height: 20px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
         .burger span { display: block; height: 3px; width: 100%; background: var(--primary); border-radius: 3px; }
-        .overlay {
+        .overlay-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); display: none; z-index: 1002;
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
+        .overlay-bg.active { display: block; }
         .drawer {
-            position: fixed; top: 0; right: -280px; width: var(--drawer-width); height: 100%;
-            background: rgba(10, 0, 0, 0.9); backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px); z-index: 1003;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 80px 20px; border-left: 1px solid rgba(255, 26, 26, 0.2);
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: rgba(10,0,0,0.95); backdrop-filter: blur(30px);
+            z-index: 1003; transition: 0.4s; padding: 80px 20px;
+            border-left: 1px solid rgba(255,26,26,0.2);
         }
         .drawer.active { right: 0; }
         .drawer-item {
             padding: 18px 0; font-weight: 700; font-size: 14px;
-            border-bottom: 1px solid rgba(255, 26, 26, 0.15);
-            text-transform: uppercase; color: var(--primary); transition: 0.3s;
+            border-bottom: 1px solid rgba(255,26,26,0.15);
+            color: var(--primary); text-transform: uppercase;
         }
-
         .content { padding: 20px; height: calc(100vh - 60px); overflow-y: auto; position: relative; z-index: 1; }
         .section { display: none; }
         .section.active { display: block; }
-
         .node-card {
-            background: rgba(20, 0, 0, 0.25); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 26, 26, 0.2);
-            border-radius: 20px; padding: 25px 18px;
-            display: flex; flex-direction: column; align-items: center;
-            text-align: center; margin-bottom: 15px;
+            background: rgba(20,0,0,0.3); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,26,26,0.2); border-radius: 20px;
+            padding: 25px 18px; text-align: center; margin-bottom: 15px;
         }
         .emoji { font-size: 32px; margin-bottom: 8px; }
         .node-name {
             font-size: 15px; font-weight: 800; margin-bottom: 10px;
-            text-transform: uppercase; color: var(--primary); letter-spacing: 1px;
+            color: var(--primary); letter-spacing: 1px;
         }
-        .node-desc { font-size: 12px; color: #aaa; margin-bottom: 20px; line-height: 1.6; padding: 0 5px; }
+        .node-desc { font-size: 12px; color: #aaa; margin-bottom: 20px; line-height: 1.6; }
         .link-btn {
-            width: 100%; background: transparent; color: var(--primary);
+            display: block; width: 100%; background: transparent; color: var(--primary);
             border: 1px solid var(--primary); padding: 14px; border-radius: 12px;
-            font-size: 12px; font-weight: 800; display: flex;
-            align-items: center; justify-content: center; transition: 0.3s;
-            text-decoration: none; text-transform: uppercase; letter-spacing: 2px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            margin-bottom: 8px;
+            font-size: 12px; font-weight: 800; text-decoration: none;
+            letter-spacing: 2px; margin-bottom: 8px;
         }
-        .link-btn:active { background: rgba(255, 26, 26, 0.15); transform: scale(0.96); }
-
+        .link-btn:active { background: rgba(255,26,26,0.15); }
         .share-row { display: flex; gap: 8px; width: 100%; margin-top: 5px; }
         .share-btn {
             flex: 1; background: transparent; border: 1px solid #333;
             color: #aaa; padding: 8px 0; border-radius: 8px;
             font-size: 10px; font-weight: 700; cursor: pointer;
-            transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
         }
-        .share-btn:active { background: rgba(255, 26, 26, 0.1); border-color: var(--primary); color: var(--primary); }
-
+        .share-btn:active { border-color: var(--primary); color: var(--primary); }
         .lang-sw {
             background: transparent; border: 1px solid var(--primary);
             color: var(--primary); padding: 6px 14px; border-radius: 8px;
-            font-weight: 800; font-size: 11px;
+            font-weight: 800; font-size: 11px; cursor: pointer;
         }
     </style>
 </head>
@@ -298,24 +146,16 @@
     <div class="preloader-percent" id="preloader-percent">0%</div>
 </div>
 
-<div class="glitch-finale" id="glitch-finale">
-    <div class="glitch-finale-inner">
-        <img class="glitch-finale-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
-    </div>
+<div class="glitch-overlay" id="glitch-overlay">
+    <img class="glitch-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
 </div>
+<div class="scanlines" id="scanlines"></div>
 
-<div class="glitch-scanlines" id="glitch-scanlines"></div>
-<div class="glitch-blocks" id="glitch-blocks"></div>
-
-<div class="custom-cursor" id="cursor"></div>
-<div class="custom-cursor-dot" id="cursor-dot"></div>
-
-<div class="bg-animation" id="bg-animation"></div>
-<div class="overlay" id="overlay"></div>
+<div class="overlay-bg" id="overlay-bg"></div>
 
 <header>
     <div class="logo-group">
-        <span class="logo-glitch">XOR</span>
+        <span class="logo-text">XOR</span>
         <img class="logo-icon" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
@@ -330,7 +170,6 @@
 
 <div class="content" id="content">
     <div id="tab-soc" class="section active">
-
         <div class="node-card">
             <div class="emoji">📢</div>
             <div class="node-name" id="tg-title">TELEGRAM</div>
@@ -343,7 +182,6 @@
                 <button class="share-btn" onclick="share('cp')">COPY</button>
             </div>
         </div>
-
         <div class="node-card">
             <div class="emoji">🛠</div>
             <div class="node-name" id="dc-title">DISCORD</div>
@@ -356,7 +194,6 @@
                 <button class="share-btn" onclick="share('cp')">COPY</button>
             </div>
         </div>
-
         <div class="node-card">
             <div class="emoji">💎</div>
             <div class="node-name" id="cb-title">CRYPTO BOT</div>
@@ -369,7 +206,6 @@
                 <button class="share-btn" onclick="share('cp')">COPY</button>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -378,108 +214,54 @@
 </audio>
 
 <script>
-// ████████████████████████████████████████████
-// ЧИСТЫЙ JS — БЕЗ ДУБЛИКАТОВ
-// ████████████████████████████████████████████
-
-const cursor = document.getElementById('cursor');
-const cursorDot = document.getElementById('cursor-dot');
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-    cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
-});
-document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
-document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
-document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn, .enter-btn').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-});
-
-const bgAnim = document.getElementById('bg-animation');
-for (let i = 0; i < 12; i++) {
-    const orb = document.createElement('div'); orb.className = 'orb';
-    const size = Math.random() * 120 + 60;
-    orb.style.width = size + 'px'; orb.style.height = size + 'px';
-    orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
-    orb.style.animationDelay = Math.random() * 8 + 's';
-    orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
-    bgAnim.appendChild(orb);
-}
-
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
-const glitchFinale = document.getElementById('glitch-finale');
-const glitchScanlines = document.getElementById('glitch-scanlines');
-const glitchBlocks = document.getElementById('glitch-blocks');
+const glitchOverlay = document.getElementById('glitch-overlay');
+const scanlines = document.getElementById('scanlines');
 const laughAudio = document.getElementById('laugh-audio');
-
-for (let i = 0; i < 15; i++) {
-    const block = document.createElement('div');
-    block.className = 'glitch-block';
-    block.style.left = Math.random() * 100 + '%';
-    block.style.top = Math.random() * 100 + '%';
-    block.style.width = (Math.random() * 200 + 50) + 'px';
-    block.style.height = (Math.random() * 20 + 5) + 'px';
-    block.style.animationDelay = Math.random() * 0.3 + 's';
-    glitchBlocks.appendChild(block);
-}
-
-function startGlitchFinale() {
-    preloader.classList.add('hidden');
-    glitchFinale.classList.add('active');
-    glitchScanlines.classList.add('active');
-    glitchBlocks.classList.add('active');
-    laughAudio.currentTime = 0;
-    laughAudio.play().catch(() => {});
-    setTimeout(() => {
-        glitchFinale.classList.remove('active');
-        glitchScanlines.classList.remove('active');
-        glitchBlocks.classList.remove('active');
-    }, 2500);
-}
 
 let loadPercent = 0;
 const loadInterval = setInterval(() => {
-    loadPercent += Math.random() * 20 + 5;
+    loadPercent += Math.random() * 25 + 5;
     if (loadPercent >= 100) {
         loadPercent = 100;
         preloaderBar.style.width = '100%';
         preloaderPercent.textContent = '100%';
         clearInterval(loadInterval);
-
         preloaderPercent.textContent = '';
         preloaderBar.style.display = 'none';
 
         const enterBtn = document.createElement('div');
         enterBtn.className = 'enter-btn';
         enterBtn.textContent = 'ENTER';
-        enterBtn.style.cssText = `
-            margin-top: 25px;
-            padding: 12px 40px;
-            border: 2px solid #ff1a1a;
-            color: #ff1a1a;
-            font-size: 16px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            cursor: pointer;
-            animation: preGlitch 1s infinite;
-            text-transform: uppercase;
-        `;
-        const launch = (e) => {
-            e.preventDefault();
+        enterBtn.onclick = () => {
             enterBtn.remove();
-            startGlitchFinale();
+            preloader.classList.add('hidden');
+            glitchOverlay.classList.add('active');
+            scanlines.classList.add('active');
+            laughAudio.currentTime = 0;
+            laughAudio.play().catch(() => {});
+            laughAudio.onended = () => {
+                glitchOverlay.classList.remove('active');
+                scanlines.classList.remove('active');
+            };
+            // Fallback if no audio
+            setTimeout(() => {
+                if (glitchOverlay.classList.contains('active')) {
+                    glitchOverlay.classList.remove('active');
+                    scanlines.classList.remove('active');
+                }
+            }, 5000);
         };
-        enterBtn.addEventListener('click', launch);
-        enterBtn.addEventListener('touchend', launch);
         preloader.appendChild(enterBtn);
     } else {
         preloaderBar.style.width = loadPercent + '%';
         preloaderPercent.textContent = Math.floor(loadPercent) + '%';
     }
-}, 250);
+}, 200);
 
+// ПЕРЕВОД
 const state = { lang: 'ru' };
 const dict = {
     ru: {
@@ -491,14 +273,14 @@ const dict = {
     },
     en: {
         m1: "SOCIAL",
-        tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel. There you'll find a lot of interesting and maybe even useful stuff.",
-        dcTitle: "DISCORD", dcDesc: "Have any questions or problems? Contact our support team on Discord.",
-        cbTitle: "CRYPTO BOT", cbDesc: "Want to support the author? Here's a link to my Crypto Bot, I'd appreciate anything ☺️",
+        tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel.",
+        dcTitle: "DISCORD", dcDesc: "Have questions? Contact our support on Discord.",
+        cbTitle: "CRYPTO BOT", cbDesc: "Want to support? Here's my Crypto Bot, appreciate anything ☺️",
         lBtn: "RU"
     }
 };
 function setLang(lang) {
-    state.lang = lang; const d = dict[lang];
+    const d = dict[lang]; state.lang = lang;
     document.getElementById('m1').innerText = d.m1;
     document.getElementById('tg-title').innerText = d.tgTitle;
     document.getElementById('tg-desc').innerText = d.tgDesc;
@@ -513,19 +295,26 @@ fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
 }).catch(() => setLang('ru'));
 document.getElementById('l-btn').onclick = () => setLang(state.lang === 'ru' ? 'en' : 'ru');
 
-const burger = document.getElementById('burger'), drawer = document.getElementById('drawer'), overlay = document.getElementById('overlay');
-burger.onclick = overlay.onclick = () => {
+// МЕНЮ
+const burger = document.getElementById('burger'), drawer = document.getElementById('drawer'), overlayBg = document.getElementById('overlay-bg');
+burger.onclick = () => {
     drawer.classList.toggle('active');
-    overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
+    overlayBg.classList.toggle('active');
+};
+overlayBg.onclick = () => {
+    drawer.classList.remove('active');
+    overlayBg.classList.remove('active');
 };
 document.querySelectorAll('.drawer-item').forEach(item => {
     item.onclick = () => {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(item.dataset.target).classList.add('active');
-        drawer.classList.remove('active'); overlay.style.display = 'none';
+        drawer.classList.remove('active');
+        overlayBg.classList.remove('active');
     };
 });
 
+// ШАРИНГ
 function share(type) {
     const url = encodeURIComponent(window.location.href), text = encodeURIComponent('XOR — Community & Tools');
     if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
@@ -534,4 +323,4 @@ function share(type) {
 }
 </script>
 </body>
-</html>
+                </html>
