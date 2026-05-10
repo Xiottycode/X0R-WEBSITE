@@ -51,15 +51,21 @@
             cursor: pointer; animation: glitch 1s infinite;
         }
 
-        /* ВИДЕО НА ВЕСЬ ЭКРАН */
-        .video-overlay {
+        /* ФИНАЛЬНАЯ КАРТИНКА */
+        .final-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999;
+            background: #050505; z-index: 9999;
             display: none; justify-content: center; align-items: center;
         }
-        .video-overlay.active { display: flex; }
-        .video-overlay video {
-            width: 100%; height: 100%; object-fit: cover;
+        .final-overlay.active { display: flex; }
+        .final-overlay img {
+            max-width: 90%; max-height: 90%; object-fit: contain;
+            animation: finalPop 0.5s ease-out;
+        }
+        @keyframes finalPop {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         header {
@@ -136,8 +142,8 @@
     <div class="preloader-percent" id="preloader-percent">0%</div>
 </div>
 
-<div class="video-overlay" id="video-overlay">
-    <video src="https://o.uguu.se/apLHZbtm.mp4" id="glitch-video" playsinline></video>
+<div class="final-overlay" id="final-overlay">
+    <img src="https://n.uguu.se/dWemiQZH.png" alt="XOR">
 </div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
@@ -198,26 +204,28 @@
     </div>
 </div>
 
+<audio id="laugh-audio" preload="auto">
+    <source src="https://d.uguu.se/UFPLzoLS.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
-const videoOverlay = document.getElementById('video-overlay');
-const glitchVideo = document.getElementById('glitch-video');
+const finalOverlay = document.getElementById('final-overlay');
+const laughAudio = document.getElementById('laugh-audio');
 
-function killVideo() {
-    glitchVideo.pause();
-    videoOverlay.classList.remove('active');
+function killFinal() {
+    finalOverlay.classList.remove('active');
 }
 
-function startVideo() {
+function startFinal() {
     preloader.classList.add('hidden');
-    videoOverlay.classList.add('active');
-    glitchVideo.currentTime = 0;
-    glitchVideo.muted = false;
-    glitchVideo.play().catch(() => {});
-    glitchVideo.onended = killVideo;
-    setTimeout(killVideo, 15000);
+    finalOverlay.classList.add('active');
+    laughAudio.currentTime = 0;
+    laughAudio.play().catch(() => {});
+    laughAudio.onended = killFinal;
+    setTimeout(killFinal, 5000);
 }
 
 let loadPercent = 0;
@@ -234,7 +242,7 @@ const loadInterval = setInterval(() => {
         const enterBtn = document.createElement('div');
         enterBtn.className = 'enter-btn';
         enterBtn.textContent = 'ENTER';
-        enterBtn.onclick = () => { enterBtn.remove(); startVideo(); };
+        enterBtn.onclick = () => { enterBtn.remove(); startFinal(); };
         preloader.appendChild(enterBtn);
     } else {
         preloaderBar.style.width = loadPercent + '%';
