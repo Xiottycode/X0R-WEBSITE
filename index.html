@@ -60,79 +60,69 @@
         }
         .glitch-overlay.active { display: flex; }
 
-        /* ЛОГОТИП С КЛОНАМИ */
+        /* ЛОГОТИП С RGB-СДВИГОМ */
         .glitch-logo-wrap { position: relative; z-index: 2; }
         .glitch-logo { width: 200px; display: block; position: relative; z-index: 2; }
         .glitch-clone {
             position: absolute; top: 0; left: 0; width: 200px; mix-blend-mode: screen;
         }
-        .glitch-clone.red  { filter: hue-rotate(0deg) saturate(3) brightness(1.5); }
-        .glitch-clone.cyan { filter: hue-rotate(180deg) saturate(3) brightness(1.5); }
-        .glitch-overlay.active .glitch-clone.red  { animation: gRed  0.1s infinite; }
-        .glitch-overlay.active .glitch-clone.cyan { animation: gCyan 0.12s infinite; }
+        .glitch-clone.red  { filter: brightness(1.5); }
+        .glitch-clone.cyan { filter: brightness(1.5); }
+        .glitch-overlay.active .glitch-clone.red  { animation: gRed  0.08s infinite; }
+        .glitch-overlay.active .glitch-clone.cyan { animation: gCyan 0.1s infinite; }
         @keyframes gRed {
-            0%,100%{ opacity:0; transform:translate(-10px,0) }
-            30%{ opacity:0.9; transform:translate(-25px,5px) }
-            60%{ opacity:0.3; transform:translate(-5px,-5px) }
-            90%{ opacity:0.8; transform:translate(-20px,3px) }
+            0%,100%{ opacity:0.6; transform:translate(-8px,0) }
+            25%{ opacity:1; transform:translate(-30px,3px) }
+            50%{ opacity:0.4; transform:translate(-2px,-3px) }
+            75%{ opacity:0.9; transform:translate(-20px,1px) }
         }
         @keyframes gCyan {
-            0%,100%{ opacity:0; transform:translate(10px,0) }
-            20%{ opacity:0.8; transform:translate(25px,-5px) }
-            50%{ opacity:1; transform:translate(5px,5px) }
-            70%{ opacity:0.2; transform:translate(15px,-3px) }
+            0%,100%{ opacity:0.6; transform:translate(8px,0) }
+            25%{ opacity:1; transform:translate(30px,-3px) }
+            50%{ opacity:0.4; transform:translate(2px,3px) }
+            75%{ opacity:0.9; transform:translate(20px,-1px) }
         }
 
-        /* БЛОКИ */
-        .glitch-blocks {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9996; display: none;
-        }
-        .glitch-blocks.active { display: block; }
-        .glitch-block {
-            position: absolute; background: rgba(255,26,26,0.6);
-            animation: blockFlash 0.2s infinite;
-        }
-        @keyframes blockFlash {
-            0%,100%{ opacity:0; transform:translateX(0) }
-            50%{ opacity:0.8; transform:translateX(30px) }
-        }
-
-        /* SCANLINES */
+        /* SCANLINES ПЛОТНЫЕ */
         .scanlines {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9995; display: none;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(255,26,26,0.06) 0px,
-                rgba(255,26,26,0.06) 2px,
-                transparent 2px,
-                transparent 4px
+                rgba(255,0,0,0.08) 0px,
+                rgba(255,0,0,0.08) 3px,
+                transparent 3px,
+                transparent 6px
             );
         }
         .scanlines.active { display: block; }
 
-        /* КРАСНЫЙ ШУМ */
+        /* ЦИФРОВОЙ ШУМ */
         .glitch-noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9994; display: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-            background-size: 200px 200px;
-            mix-blend-mode: screen;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+            mix-blend-mode: overlay;
+            animation: noiseShift 0.5s steps(5) infinite;
         }
         .glitch-noise.active { display: block; }
+        @keyframes noiseShift {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 100px; }
+        }
 
-        /* ВСПЫШКИ */
-        .glitch-flash {
+        /* ГОРИЗОНТАЛЬНЫЕ БЛОКИ (СДВИГИ СТРОК) */
+        .glitch-slices {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9993; display: none;
-            background: rgba(255,0,0,0.3);
-            animation: flashBang 0.3s infinite;
         }
-        .glitch-flash.active { display: block; }
-        @keyframes flashBang {
-            0%,100%{ opacity:0 }
-            50%{ opacity:0.5 }
+        .glitch-slices.active { display: block; }
+        .glitch-slice {
+            position: absolute; left: 0; width: 100%;
+            height: 12px;
+            background: rgba(255,0,0,0.3);
+            mix-blend-mode: screen;
         }
 
         header {
@@ -216,10 +206,9 @@
         <img class="glitch-clone cyan" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="">
     </div>
 </div>
-<div class="glitch-blocks" id="glitch-blocks"></div>
 <div class="scanlines" id="scanlines"></div>
 <div class="glitch-noise" id="glitch-noise"></div>
-<div class="glitch-flash" id="glitch-flash"></div>
+<div class="glitch-slices" id="glitch-slices"></div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
 
@@ -288,39 +277,34 @@ const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
 const glitchOverlay = document.getElementById('glitch-overlay');
-const glitchBlocks = document.getElementById('glitch-blocks');
 const scanlines = document.getElementById('scanlines');
 const glitchNoise = document.getElementById('glitch-noise');
-const glitchFlash = document.getElementById('glitch-flash');
+const glitchSlices = document.getElementById('glitch-slices');
 const laughAudio = document.getElementById('laugh-audio');
 
-// ГЛИТЧ-БЛОКИ ПО ВСЕМУ ЭКРАНУ
-for (let i = 0; i < 20; i++) {
-    const block = document.createElement('div');
-    block.className = 'glitch-block';
-    block.style.left = Math.random() * 100 + '%';
-    block.style.top = Math.random() * 100 + '%';
-    block.style.width = (Math.random() * 300 + 50) + 'px';
-    block.style.height = (Math.random() * 25 + 3) + 'px';
-    block.style.animationDelay = Math.random() * 0.3 + 's';
-    glitchBlocks.appendChild(block);
+// ГЛИТЧ-СДВИГИ СТРОК (как на пине)
+for (let i = 0; i < 8; i++) {
+    const slice = document.createElement('div');
+    slice.className = 'glitch-slice';
+    slice.style.top = (Math.random() * 90) + '%';
+    slice.style.height = (Math.random() * 20 + 6) + 'px';
+    slice.style.animationDelay = Math.random() * 0.3 + 's';
+    glitchSlices.appendChild(slice);
 }
 
 function killGlitch() {
     glitchOverlay.classList.remove('active');
-    glitchBlocks.classList.remove('active');
     scanlines.classList.remove('active');
     glitchNoise.classList.remove('active');
-    glitchFlash.classList.remove('active');
+    glitchSlices.classList.remove('active');
 }
 
 function startGlitch() {
     preloader.classList.add('hidden');
     glitchOverlay.classList.add('active');
-    glitchBlocks.classList.add('active');
     scanlines.classList.add('active');
     glitchNoise.classList.add('active');
-    glitchFlash.classList.add('active');
+    glitchSlices.classList.add('active');
     laughAudio.currentTime = 0;
     laughAudio.play().catch(() => {});
     laughAudio.onended = killGlitch;
