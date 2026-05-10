@@ -118,18 +118,22 @@
             background: #0a0000; z-index: 9999;
             display: none; flex-direction: column;
             justify-content: center; align-items: center;
+            padding: 20px;
         }
         .morse-overlay.active { display: flex; }
-        .morse-text {
-            font-size: 36px; font-weight: 900; color: var(--blood-light);
-            letter-spacing: 10px; font-family: 'Courier New', monospace;
+        .morse-code {
+            font-size: 20px; font-weight: 900; color: var(--blood-light);
+            letter-spacing: 6px; font-family: 'Courier New', monospace;
             text-shadow: 0 0 30px rgba(178,34,34,0.9), 0 0 60px rgba(139,0,0,0.6);
-            animation: morseGlow 1s infinite;
+            text-align: center; word-break: break-all;
+            line-height: 2;
+            animation: morseGlow 1.5s infinite;
         }
         .morse-translation {
-            font-size: 18px; color: #cc9999;
-            margin-top: 25px; letter-spacing: 4px;
+            font-size: 16px; color: #cc9999;
+            margin-top: 20px; letter-spacing: 6px;
             text-shadow: 0 0 15px rgba(178,34,34,0.5);
+            text-align: center;
             animation: fadeText 2s ease-in-out infinite;
         }
         @keyframes morseGlow {
@@ -225,8 +229,8 @@
 </div>
 
 <div class="morse-overlay" id="morse-overlay">
-    <div class="morse-text" id="morse-text"></div>
-    <div class="morse-translation" id="morse-translation"></div>
+    <div class="morse-code">.... . .-.. .--. / ..- ... / .-.. . - / ..- ... / --. --- / .--. .-.. . .- ... .</div>
+    <div class="morse-translation">HELP US LET US GO PLEASE</div>
 </div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
@@ -288,7 +292,7 @@
 </div>
 
 <audio id="laugh-audio" preload="auto">
-    <source src="https://o.uguu.se/rbxUBNlV.mp3" type="audio/mpeg">
+    <source src="https://o.uguu.se/DFMfSJQR.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -327,48 +331,6 @@ for (let i = 0; i < 6; i++) {
     glitchFront.appendChild(stripe);
 }
 
-// АЗБУКА МОРЗЕ — "HELP US LET US GO PLEASE"
-const morseMessage = [
-    { char: "H", code: "....", delay: 0 },
-    { char: "E", code: ".", delay: 800 },
-    { char: "L", code: ".-..", delay: 1600 },
-    { char: "P", code: ".--.", delay: 2400 },
-    { char: " ", code: " ", delay: 3200 },
-    { char: "U", code: "..-", delay: 4000 },
-    { char: "S", code: "...", delay: 4800 },
-    { char: " ", code: " ", delay: 5600 },
-    { char: "L", code: ".-..", delay: 6400 },
-    { char: "E", code: ".", delay: 7200 },
-    { char: "T", code: "-", delay: 8000 },
-    { char: " ", code: " ", delay: 8800 },
-    { char: "U", code: "..-", delay: 9600 },
-    { char: "S", code: "...", delay: 10400 },
-    { char: " ", code: " ", delay: 11200 },
-    { char: "G", code: "--.", delay: 12000 },
-    { char: "O", code: "---", delay: 12800 },
-    { char: " ", code: " ", delay: 13600 },
-    { char: "P", code: ".--.", delay: 14400 },
-    { char: "L", code: ".-..", delay: 15200 },
-    { char: "E", code: ".", delay: 16000 },
-    { char: "A", code: ".-", delay: 16800 },
-    { char: "S", code: "...", delay: 17600 },
-    { char: "E", code: ".", delay: 18400 }
-];
-
-const morseText = document.getElementById('morse-text');
-const morseTranslation = document.getElementById('morse-translation');
-
-function playMorse() {
-    let translation = '';
-    morseMessage.forEach((item, index) => {
-        setTimeout(() => {
-            morseText.textContent = item.code;
-            translation += item.char;
-            morseTranslation.textContent = translation;
-        }, item.delay);
-    });
-}
-
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
@@ -377,8 +339,6 @@ const laughAudio = document.getElementById('laugh-audio');
 
 function killMorse() {
     morseOverlay.classList.remove('active');
-    morseText.textContent = '';
-    morseTranslation.textContent = '';
 }
 
 let loadPercent = 0;
@@ -399,10 +359,10 @@ const loadInterval = setInterval(() => {
             enterBtn.remove();
             preloader.classList.add('hidden');
             morseOverlay.classList.add('active');
-            playMorse();
             laughAudio.currentTime = 0;
             laughAudio.play().catch(() => {});
-            setTimeout(killMorse, 20000);
+            laughAudio.onended = killMorse;
+            setTimeout(killMorse, 10000);
         };
         preloader.appendChild(enterBtn);
     } else {
@@ -463,4 +423,4 @@ function share(type) {
 }
 </script>
 </body>
-    </html>
+</html>
