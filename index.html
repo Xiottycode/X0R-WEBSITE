@@ -6,7 +6,7 @@
     <title>XOR</title>
     <meta property="og:title" content="XOR — Community & Tools">
     <meta property="og:description" content="Telegram, Discord, Crypto Bot.">
-    <meta property="og:image" content="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png">
+    <meta property="og:image" content="https://n.uguu.se/dWemiQZH.png">
     <meta name="theme-color" content="#ff1a1a">
     <style>
         :root { --primary: #ff1a1a; }
@@ -51,7 +51,6 @@
             cursor: pointer; animation: glitch 1s infinite;
         }
 
-        /* ФОТО НА ВРЕМЯ ЗВУКА */
         .final-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 9999;
@@ -205,7 +204,7 @@
 </div>
 
 <audio id="laugh-audio" preload="auto">
-    <source src="https://d.uguu.se/UFPLzoLS.mp3" type="audio/mpeg">
+    <source src="https://o.uguu.se/rbxUBNlV.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -237,10 +236,13 @@ const loadInterval = setInterval(() => {
             enterBtn.remove();
             preloader.classList.add('hidden');
             finalOverlay.classList.add('active');
+            // Звук запускается только по клику — браузер не блокирует
             laughAudio.currentTime = 0;
-            laughAudio.play().catch(() => {});
-            laughAudio.onended = killFinal;
-            setTimeout(killFinal, 5000);
+            laughAudio.play().then(() => {
+                laughAudio.onended = killFinal;
+            }).catch(() => {
+                setTimeout(killFinal, 5000);
+            });
         };
         preloader.appendChild(enterBtn);
     } else {
