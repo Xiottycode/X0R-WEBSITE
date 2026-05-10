@@ -52,7 +52,6 @@
         }
         .custom-cursor.hover { width: 40px; height: 40px; border-color: #ff4444; }
 
-        /* ПРЕДЗАГРУЗЧИК */
         .preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 10000;
@@ -84,7 +83,6 @@
             96% { transform: translate(3px, 0); opacity: 0.9; }
         }
 
-        /* ГЛИТЧ-ФИНАЛ */
         .glitch-finale {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 9998;
@@ -117,7 +115,6 @@
             100% { transform: scale(3); opacity: 0; }
         }
 
-        /* ГЛИТЧ-ЛИНИИ НА ВЕСЬ ЭКРАН */
         .glitch-scanlines {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 9997; pointer-events: none;
@@ -133,7 +130,6 @@
         }
         .glitch-scanlines.active { opacity: 1; visibility: visible; }
 
-        /* ГЛИТЧ-БЛОКИ */
         .glitch-blocks {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 9996; pointer-events: none;
@@ -296,24 +292,19 @@
 </head>
 <body>
 
-<!-- ПРЕДЗАГРУЗЧИК -->
 <div class="preloader" id="preloader">
     <div class="preloader-logo">XOR</div>
     <div class="preloader-bar-bg"><div class="preloader-bar" id="preloader-bar"></div></div>
     <div class="preloader-percent" id="preloader-percent">0%</div>
 </div>
 
-<!-- ГЛИТЧ-ФИНАЛ -->
 <div class="glitch-finale" id="glitch-finale">
     <div class="glitch-finale-inner">
         <img class="glitch-finale-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
     </div>
 </div>
 
-<!-- ГЛИТЧ-ЛИНИИ -->
 <div class="glitch-scanlines" id="glitch-scanlines"></div>
-
-<!-- ГЛИТЧ-БЛОКИ -->
 <div class="glitch-blocks" id="glitch-blocks"></div>
 
 <div class="custom-cursor" id="cursor"></div>
@@ -387,303 +378,10 @@
 </audio>
 
 <script>
-    // КУРСОР
-    const cursor = document.getElementById('cursor');
-    const cursorDot = document.getElementById('cursor-dot');
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-        cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
-    });
-    document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
-    document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
-    document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
+// ████████████████████████████████████████████
+// ВЕСЬ JS В ОДНОМ ЭКЗЕМПЛЯРЕ — БЕЗ ДУБЛИКАТОВ
+// ████████████████████████████████████████████
 
-    // ФОН
-    const bg = document.getElementById('bg-animation');
-    for (let i = 0; i < 12; i++) {
-        const orb = document.createElement('div'); orb.className = 'orb';
-        const size = Math.random() * 120 + 60;
-        orb.style.width = size + 'px'; orb.style.height = size + 'px';
-        orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
-        orb.style.animationDelay = Math.random() * 8 + 's';
-        orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
-        bg.appendChild(orb);
-    }
-
-    // ПРЕДЗАГРУЗЧИК
-    const preloader = document.getElementById('preloader');
-    const preloaderBar = document.getElementById('preloader-bar');
-    const preloaderPercent = document.getElementById('preloader-percent');
-    const glitchFinale = document.getElementById('glitch-finale');
-    const glitchScanlines = document.getElementById('glitch-scanlines');
-    const glitchBlocks = document.getElementById('glitch-blocks');
-    const laughAudio = document.getElementById('laugh-audio');
-
-    // Генерируем глитч-блоки
-    for (let i = 0; i < 15; i++) {
-        const block = document.createElement('div');
-        block.className = 'glitch-block';
-        block.style.left = Math.random() * 100 + '%';
-        block.style.top = Math.random() * 100 + '%';
-        block.style.width = (Math.random() * 200 + 50) + 'px';
-        block.style.height = (Math.random() * 20 + 5) + 'px';
-        block.style.animationDelay = Math.random() * 0.3 + 's';
-        glitchBlocks.appendChild(block);
-    }
-
-    let loadPercent = 0;
-    const loadInterval = setInterval(() => {
-        loadPercent += Math.random() * 20 + 5;
-        if (loadPercent >= 100) {
-            loadPercent = 100;
-            preloaderBar.style.width = '100%';
-            preloaderPercent.textContent = '100%';
-            clearInterval(loadInterval);
-
-            setTimeout(() => {
-                // СКРЫВАЕМ ПРЕДЗАГРУЗЧИК
-                preloader.classList.add('hidden');
-
-                // ЗАПУСКАЕМ ГЛИТЧ-ФИНАЛ
-                glitchFinale.classList.add('active');
-                glitchScanlines.classList.add('active');
-                glitchBlocks.classList.add('active');
-
-                // ЗВУК
-                laughAudio.play().catch(() => {});
-
-                // УБИРАЕМ ВСЁ ЧЕРЕЗ 2 СЕК
-                setTimeout(() => {
-                    glitchFinale.classList.remove('active');
-                    glitchScanlines.classList.remove('active');
-                    glitchBlocks.classList.remove('active');
-                }, 2000);
-            }, 300);
-        } else {
-            preloaderBar.style.width = loadPercent + '%';
-            preloaderPercent.textContent = Math.floor(loadPercent) + '%';
-        }
-    }, 250);
-
-    // ПЕРЕВОД + ГЕОЛОКАЦИЯ
-    const state = { lang: 'ru' };
-    const dict = {
-        ru: {
-            m1: "СОЦ. СЕТИ",
-            tgTitle: "TELEGRAM", tgDesc: "Чтобы попасть в основной канал, переходи в наш переходник и кидайте заявку в основной, там вы найдёте много интересного, а может даже полезного.",
-            dcTitle: "DISCORD", dcDesc: "Есть какие-то вопросы либо проблемы? Обращайтесь в нашу техподдержку в Дискорде.",
-            cbTitle: "CRYPTO BOT", cbDesc: "Хотите поддержать автора? Вот ссылка на мой Crypto Bot, буду рад всему ☺️",
-            lBtn: "EN"
-        },
-        en: {
-            m1: "SOCIAL",
-            tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel. There you'll find a lot of interesting and maybe even useful stuff.",
-            dcTitle: "DISCORD", dcDesc: "Have any questions or problems? Contact our support team on Discord.",
-            cbTitle: "CRYPTO BOT", cbDesc: "Want to support the author? Here's a link to my Crypto Bot, I'd appreciate anything ☺️",
-            lBtn: "RU"
-        }
-    };
-    function setLang(lang) {
-        state.lang = lang; const d = dict[lang];
-        document.getElementById('m1').innerText = d.m1;
-        document.getElementById('tg-title').innerText = d.tgTitle;
-        document.getElementById('tg-desc').innerText = d.tgDesc;
-        document.getElementById('dc-title').innerText = d.dcTitle;
-        document.getElementById('dc-desc').innerText = d.dcDesc;
-        document.getElementById('cb-title').innerText = d.cbTitle;
-        document.getElementById('cb-desc').innerText = d.cbDesc;
-        document.getElementById('l-btn').innerText = d.lBtn;
-    }
-<script>
-    // КУРСОР
-    const cursor = document.getElementById('cursor');
-    const cursorDot = document.getElementById('cursor-dot');
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-        cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
-    });
-    document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
-    document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
-    document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-
-    // ФОН
-    const bg = document.getElementById('bg-animation');
-    for (let i = 0; i < 12; i++) {
-        const orb = document.createElement('div'); orb.className = 'orb';
-        const size = Math.random() * 120 + 60;
-        orb.style.width = size + 'px'; orb.style.height = size + 'px';
-        orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
-        orb.style.animationDelay = Math.random() * 8 + 's';
-        orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
-        bg.appendChild(orb);
-    }
-
-    // ЗВУК — загружаем заранее через AudioContext
-    const laughAudio = document.getElementById('laugh-audio');
-    let audioReady = false;
-    
-    // Предзагрузка аудио через создание буфера
-    async function initAudio() {
-        if (audioReady) return;
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            const ctx = new AudioContext();
-            const response = await fetch('https://d.uguu.se/UFPLzoLS.mp3');
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-            
-            laughAudio._buffer = audioBuffer;
-            laughAudio._ctx = ctx;
-            audioReady = true;
-        } catch(e) {
-            console.log('Audio preload failed, fallback to html audio');
-        }
-    }
-    
-    function playLaugh() {
-        // Пробуем через предзагруженный буфер
-        if (laughAudio._ctx && laughAudio._buffer) {
-            const source = laughAudio._ctx.createBufferSource();
-            source.buffer = laughAudio._buffer;
-            source.connect(laughAudio._ctx.destination);
-            source.start(0);
-            return;
-        }
-        // Fallback: обычный HTML5 audio
-        laughAudio.currentTime = 0;
-        laughAudio.volume = 1;
-        laughAudio.muted = false;
-        laughAudio.play().catch(() => {});
-    }
-
-    // Инициализация аудио при первом касании/клике
-    document.addEventListener('click', initAudio, { once: false });
-    document.addEventListener('touchstart', initAudio, { once: false });
-
-    // ПРЕДЗАГРУЗЧИК
-    const preloader = document.getElementById('preloader');
-    const preloaderBar = document.getElementById('preloader-bar');
-    const preloaderPercent = document.getElementById('preloader-percent');
-    const glitchFinale = document.getElementById('glitch-finale');
-    const glitchScanlines = document.getElementById('glitch-scanlines');
-    const glitchBlocks = document.getElementById('glitch-blocks');
-
-    // Генерируем глитч-блоки
-    for (let i = 0; i < 15; i++) {
-        const block = document.createElement('div');
-        block.className = 'glitch-block';
-        block.style.left = Math.random() * 100 + '%';
-        block.style.top = Math.random() * 100 + '%';
-        block.style.width = (Math.random() * 200 + 50) + 'px';
-        block.style.height = (Math.random() * 20 + 5) + 'px';
-        block.style.animationDelay = Math.random() * 0.3 + 's';
-        glitchBlocks.appendChild(block);
-    }
-
-    let loadPercent = 0;
-    const loadInterval = setInterval(() => {
-        loadPercent += Math.random() * 20 + 5;
-        if (loadPercent >= 100) {
-            loadPercent = 100;
-            preloaderBar.style.width = '100%';
-            preloaderPercent.textContent = '100%';
-            clearInterval(loadInterval);
-
-            setTimeout(() => {
-                preloader.classList.add('hidden');
-                glitchFinale.classList.add('active');
-                glitchScanlines.classList.add('active');
-                glitchBlocks.classList.add('active');
-                
-                // ВОСПРОИЗВОДИМ ЗВУК
-                playLaugh();
-
-                setTimeout(() => {
-                    glitchFinale.classList.remove('active');
-                    glitchScanlines.classList.remove('active');
-                    glitchBlocks.classList.remove('active');
-                }, 2000);
-            }, 300);// КУРСОР
-const cursor = document.getElementById('cursor');
-const cursorDot = document.getElementById('cursor-dot');
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-    cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
-});
-document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
-document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
-document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-});
-
-// ФОН
-const bg = document.getElementById('bg-animation');
-for (let i = 0; i < 12; i++) {
-    const orb = document.createElement('div'); orb.className = 'orb';
-    const size = Math.random() * 120 + 60;
-    orb.style.width = size + 'px'; orb.style.height = size + 'px';
-    orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
-    orb.style.animationDelay = Math.random() * 8 + 's';
-    orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
-    bg.appendChild(orb);
-}
-
-// ПРЕДЗАГРУЗЧИК
-const preloader = document.getElementById('preloader');
-const preloaderBar = document.getElementById('preloader-bar');
-const preloaderPercent = document.getElementById('preloader-percent');
-const glitchFinale = document.getElementById('glitch-finale');
-const glitchScanlines = document.getElementById('glitch-scanlines');
-const glitchBlocks = document.getElementById('glitch-blocks');
-const laughAudio = document.getElementById('laugh-audio');
-
-// Генерируем глитч-блоки
-for (let i = 0; i < 15; i++) {
-    const block = document.createElement('div');
-    block.className = 'glitch-block';
-    block.style.left = Math.random() * 100 + '%';
-    block.style.top = Math.random() * 100 + '%';
-    block.style.width = (Math.random() * 200 + 50) + 'px';
-    block.style.height = (Math.random() * 20 + 5) + 'px';
-    block.style.animationDelay = Math.random() * 0.3 + 's';
-    glitchBlocks.appendChild(block);
-}
-
-function startGlitchFinale() {
-    preloader.classList.add('hidden');
-    glitchFinale.classList.add('active');
-    glitchScanlines.classList.add('active');
-    glitchBlocks.classList.add('active');
-
-    // Запускаем звук
-    laughAudio.currentTime = 0;
-    laughAudio.play().then(() => {
-        // Когда звук закончился — убираем глитч
-        laughAudio.addEventListener('ended', () => {
-            glitchFinale.classList.remove('active');
-            glitchScanlines.classList.remove('active');
-            glitchBlocks.classList.remove('active');
-        }, { once: true });
-    }).catch(() => {
-        // Если не удалось — fallback: 3 секунды глитча
-        setTimeout(() => {
-            glitchFinale.classList.remove('active');
-            glitchScanlines.classList.remove('active');
-            glitchBlocks.classList.remove('active');
-        }, 3000);
-    });
-}
-
-let loadPercent = 0;
-const loadInterval = setInterval(() => {
-    loadPercent += Math.random() * 20 + 5;
 // КУРСОР
 const cursor = document.getElementById('cursor');
 const cursorDot = document.getElementById('cursor-dot');
@@ -699,7 +397,7 @@ document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-
 });
 
 // ФОН
-const bg = document.getElementById('bg-animation');
+const bgAnim = document.getElementById('bg-animation');
 for (let i = 0; i < 12; i++) {
     const orb = document.createElement('div'); orb.className = 'orb';
     const size = Math.random() * 120 + 60;
@@ -707,10 +405,10 @@ for (let i = 0; i < 12; i++) {
     orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
     orb.style.animationDelay = Math.random() * 8 + 's';
     orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
-    bg.appendChild(orb);
+    bgAnim.appendChild(orb);
 }
 
-// ПРЕДЗАГРУЗЧИК (без звука)
+// ПРЕДЗАГРУЗЧИК
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
@@ -719,7 +417,7 @@ const glitchScanlines = document.getElementById('glitch-scanlines');
 const glitchBlocks = document.getElementById('glitch-blocks');
 const laughAudio = document.getElementById('laugh-audio');
 
-// Глитч-блоки
+// ГЛИТЧ-БЛОКИ
 for (let i = 0; i < 15; i++) {
     const block = document.createElement('div');
     block.className = 'glitch-block';
@@ -736,12 +434,8 @@ function startGlitchFinale() {
     glitchFinale.classList.add('active');
     glitchScanlines.classList.add('active');
     glitchBlocks.classList.add('active');
-
-    // Пробуем звук
     laughAudio.currentTime = 0;
     laughAudio.play().catch(() => {});
-
-    // Глитч на 2 секунды (не зависит от звука)
     setTimeout(() => {
         glitchFinale.classList.remove('active');
         glitchScanlines.classList.remove('active');
@@ -749,7 +443,6 @@ function startGlitchFinale() {
     }, 2000);
 }
 
-// ЗАГРУЗКА
 let loadPercent = 0;
 const loadInterval = setInterval(() => {
     loadPercent += Math.random() * 20 + 5;
@@ -758,8 +451,6 @@ const loadInterval = setInterval(() => {
         preloaderBar.style.width = '100%';
         preloaderPercent.textContent = '100%';
         clearInterval(loadInterval);
-
-        // Автозапуск без ожидания клика
         setTimeout(startGlitchFinale, 400);
     } else {
         preloaderBar.style.width = loadPercent + '%';
@@ -767,7 +458,7 @@ const loadInterval = setInterval(() => {
     }
 }, 250);
 
-// ПЕРЕВОД + ГЕОЛОКАЦИЯ
+// ПЕРЕВОД
 const state = { lang: 'ru' };
 const dict = {
     ru: {
@@ -822,6 +513,6 @@ function share(type) {
     const links = { tg: `https://t.me/share/url?url=${url}&text=${text}`, tw: `https://x.com/intent/tweet?url=${url}&text=${text}`, wa: `https://wa.me/?text=${text}%20${url}` };
     window.open(links[type], '_blank');
 }
-        </script>
+</script>
 </body>
 </html>
