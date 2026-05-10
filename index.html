@@ -52,7 +52,7 @@
         }
         .custom-cursor.hover { width: 40px; height: 40px; border-color: #ff4444; }
 
-        /* СТАРЫЙ ПРЕДЗАГРУЗЧИК */
+        /* ПРЕДЗАГРУЗЧИК */
         .preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 10000;
@@ -84,45 +84,71 @@
             96% { transform: translate(3px, 0); opacity: 0.9; }
         }
 
-        /* ГЛИТЧ-ФИНАЛ ПОСЛЕ ЗАГРУЗКИ */
+        /* ГЛИТЧ-ФИНАЛ */
         .glitch-finale {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 9998;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+            display: flex; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden;
-            transition: opacity 0.3s;
+            transition: opacity 0.2s;
         }
         .glitch-finale.active { opacity: 1; visibility: visible; }
+        .glitch-finale-inner {
+            text-align: center;
+            animation: finaleGlitch 0.15s infinite;
+        }
         .glitch-finale-logo {
-            width: 180px; height: auto;
-            animation: finaleGlitch 0.3s infinite, finaleZoom 1.5s ease-in-out;
+            width: 200px; height: auto;
+            filter: drop-shadow(0 0 30px rgba(255,26,26,0.8));
+            animation: finaleZoom 2s ease-in-out forwards;
         }
-        .glitch-finale-laugh {
-            font-size: 30px; font-weight: 900; color: #ff1a1a;
-            margin-top: 20px; font-family: 'Press Start 2P', monospace;
-            animation: laughShake 0.4s ease-in-out infinite, finaleZoom 1.5s ease-in-out;
-            text-shadow: 0 0 20px rgba(255,26,26,0.8), 0 0 60px rgba(255,26,26,0.5);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        .glitch-finale-laugh.show { opacity: 1; }
         @keyframes finaleGlitch {
             0% { transform: translate(0); opacity: 1; }
-            25% { transform: translate(-8px, 3px); opacity: 0.6; }
-            50% { transform: translate(8px, -3px); opacity: 0.9; }
-            75% { transform: translate(-4px, -2px); opacity: 0.5; }
-            100% { transform: translate(4px, 2px); opacity: 1; }
+            20% { transform: translate(-15px, 5px); opacity: 0.4; }
+            40% { transform: translate(15px, -5px); opacity: 0.9; }
+            60% { transform: translate(-8px, -3px); opacity: 0.3; }
+            80% { transform: translate(8px, 3px); opacity: 0.8; }
+            100% { transform: translate(0); opacity: 1; }
         }
         @keyframes finaleZoom {
-            0% { transform: scale(0.3); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(0); opacity: 0; }
+            0% { transform: scale(0.2); opacity: 0; }
+            30% { transform: scale(1.15); opacity: 1; }
+            60% { transform: scale(0.95); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
         }
-        @keyframes laughShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px) rotate(-3deg); }
-            75% { transform: translateX(6px) rotate(3deg); }
+
+        /* ГЛИТЧ-ЛИНИИ НА ВЕСЬ ЭКРАН */
+        .glitch-scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9997; pointer-events: none;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.2s;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255,26,26,0.03) 0px,
+                rgba(255,26,26,0.03) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+        }
+        .glitch-scanlines.active { opacity: 1; visibility: visible; }
+
+        /* ГЛИТЧ-БЛОКИ */
+        .glitch-blocks {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9996; pointer-events: none;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.2s;
+        }
+        .glitch-blocks.active { opacity: 1; visibility: visible; }
+        .glitch-block {
+            position: absolute;
+            background: rgba(255,26,26,0.6);
+            animation: blockGlitch 0.3s infinite;
+        }
+        @keyframes blockGlitch {
+            0%, 100% { opacity: 0; transform: translateX(0); }
+            50% { opacity: 0.8; transform: translateX(20px); }
         }
 
         body {
@@ -279,9 +305,16 @@
 
 <!-- ГЛИТЧ-ФИНАЛ -->
 <div class="glitch-finale" id="glitch-finale">
-    <img class="glitch-finale-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
-    <div class="glitch-finale-laugh" id="glitch-finale-laugh">ХА-ХА-ХА!</div>
+    <div class="glitch-finale-inner">
+        <img class="glitch-finale-logo" src="https://i.ibb.co/WNwRDY9v/Picsart-26-05-10-02-08-43-439.png" alt="XOR">
+    </div>
 </div>
+
+<!-- ГЛИТЧ-ЛИНИИ -->
+<div class="glitch-scanlines" id="glitch-scanlines"></div>
+
+<!-- ГЛИТЧ-БЛОКИ -->
+<div class="glitch-blocks" id="glitch-blocks"></div>
 
 <div class="custom-cursor" id="cursor"></div>
 <div class="custom-cursor-dot" id="cursor-dot"></div>
@@ -349,9 +382,8 @@
     </div>
 </div>
 
-<!-- СКРЫТЫЙ АУДИО -->
 <audio id="laugh-audio" preload="auto">
-    <source src="https://limewire.com/d/j1DJP#xnPjtlSzJi" type="audio/mpeg">
+    <source src="https://d.uguu.se/UFPLzoLS.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -386,8 +418,21 @@
     const preloaderBar = document.getElementById('preloader-bar');
     const preloaderPercent = document.getElementById('preloader-percent');
     const glitchFinale = document.getElementById('glitch-finale');
-    const glitchLaugh = document.getElementById('glitch-finale-laugh');
+    const glitchScanlines = document.getElementById('glitch-scanlines');
+    const glitchBlocks = document.getElementById('glitch-blocks');
     const laughAudio = document.getElementById('laugh-audio');
+
+    // Генерируем глитч-блоки
+    for (let i = 0; i < 15; i++) {
+        const block = document.createElement('div');
+        block.className = 'glitch-block';
+        block.style.left = Math.random() * 100 + '%';
+        block.style.top = Math.random() * 100 + '%';
+        block.style.width = (Math.random() * 200 + 50) + 'px';
+        block.style.height = (Math.random() * 20 + 5) + 'px';
+        block.style.animationDelay = Math.random() * 0.3 + 's';
+        glitchBlocks.appendChild(block);
+    }
 
     let loadPercent = 0;
     const loadInterval = setInterval(() => {
@@ -398,25 +443,24 @@
             preloaderPercent.textContent = '100%';
             clearInterval(loadInterval);
 
-            // ЗАПУСК ГЛИТЧ-ФИНАЛА
             setTimeout(() => {
+                // СКРЫВАЕМ ПРЕДЗАГРУЗЧИК
                 preloader.classList.add('hidden');
+
+                // ЗАПУСКАЕМ ГЛИТЧ-ФИНАЛ
                 glitchFinale.classList.add('active');
-                
-                // ПРОБУЕМ ЗАПУСТИТЬ ЗВУК
-                laughAudio.play().catch(() => {
-                    // Автоплей заблокирован браузером — нужен клик
-                    console.log('Click anywhere to play sound');
-                });
+                glitchScanlines.classList.add('active');
+                glitchBlocks.classList.add('active');
 
-                // ПОКАЗЫВАЕМ ХА-ХА-ХА ЧЕРЕЗ 0.5 СЕК
-                setTimeout(() => glitchLaugh.classList.add('show'), 500);
+                // ЗВУК
+                laughAudio.play().catch(() => {});
 
-                // УБИРАЕМ ФИНАЛ ЧЕРЕЗ 2 СЕК
+                // УБИРАЕМ ВСЁ ЧЕРЕЗ 2 СЕК
                 setTimeout(() => {
                     glitchFinale.classList.remove('active');
-                    glitchLaugh.classList.remove('show');
-                }, 2500);
+                    glitchScanlines.classList.remove('active');
+                    glitchBlocks.classList.remove('active');
+                }, 2000);
             }, 300);
         } else {
             preloaderBar.style.width = loadPercent + '%';
