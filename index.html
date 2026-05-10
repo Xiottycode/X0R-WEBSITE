@@ -609,68 +609,159 @@
                     glitchScanlines.classList.remove('active');
                     glitchBlocks.classList.remove('active');
                 }, 2000);
-            }, 300);
-        } else {
-            preloaderBar.style.width = loadPercent + '%';
-            preloaderPercent.textContent = Math.floor(loadPercent) + '%';
-        }
-    }, 250);
+            }, 300);// КУРСОР
+const cursor = document.getElementById('cursor');
+const cursorDot = document.getElementById('cursor-dot');
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
+});
+document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
+document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
+document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
 
-    // ПЕРЕВОД + ГЕОЛОКАЦИЯ
-    const state = { lang: 'ru' };
-    const dict = {
-        ru: {
-            m1: "СОЦ. СЕТИ",
-            tgTitle: "TELEGRAM", tgDesc: "Чтобы попасть в основной канал, переходи в наш переходник и кидайте заявку в основной, там вы найдёте много интересного, а может даже полезного.",
-            dcTitle: "DISCORD", dcDesc: "Есть какие-то вопросы либо проблемы? Обращайтесь в нашу техподдержку в Дискорде.",
-            cbTitle: "CRYPTO BOT", cbDesc: "Хотите поддержать автора? Вот ссылка на мой Crypto Bot, буду рад всему ☺️",
-            lBtn: "EN"
-        },
-        en: {
-            m1: "SOCIAL",
-            tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel. There you'll find a lot of interesting and maybe even useful stuff.",
-            dcTitle: "DISCORD", dcDesc: "Have any questions or problems? Contact our support team on Discord.",
-            cbTitle: "CRYPTO BOT", cbDesc: "Want to support the author? Here's a link to my Crypto Bot, I'd appreciate anything ☺️",
-            lBtn: "RU"
-        }
-    };
-    function setLang(lang) {
-        state.lang = lang; const d = dict[lang];
-        document.getElementById('m1').innerText = d.m1;
-        document.getElementById('tg-title').innerText = d.tgTitle;
-        document.getElementById('tg-desc').innerText = d.tgDesc;
-        document.getElementById('dc-title').innerText = d.dcTitle;
-        document.getElementById('dc-desc').innerText = d.dcDesc;
-        document.getElementById('cb-title').innerText = d.cbTitle;
-        document.getElementById('cb-desc').innerText = d.cbDesc;
-        document.getElementById('l-btn').innerText = d.lBtn;
-    }
-    fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
-        setLang(['RU','BY','KZ','UA','AM','KG','UZ','TJ','MD','AZ','GE'].includes(data.country_code) ? 'ru' : 'en');
-    }).catch(() => setLang('ru'));
-    document.getElementById('l-btn').onclick = () => setLang(state.lang === 'ru' ? 'en' : 'ru');
+// ФОН
+const bg = document.getElementById('bg-animation');
+for (let i = 0; i < 12; i++) {
+    const orb = document.createElement('div'); orb.className = 'orb';
+    const size = Math.random() * 120 + 60;
+    orb.style.width = size + 'px'; orb.style.height = size + 'px';
+    orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
+    orb.style.animationDelay = Math.random() * 8 + 's';
+    orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
+    bg.appendChild(orb);
+}
 
-    // МЕНЮ
-    const burger = document.getElementById('burger'), drawer = document.getElementById('drawer'), overlay = document.getElementById('overlay');
-    burger.onclick = overlay.onclick = () => {
-        drawer.classList.toggle('active');
-        overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
-    };
-    document.querySelectorAll('.drawer-item').forEach(item => {
-        item.onclick = () => {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(item.dataset.target).classList.add('active');
-            drawer.classList.remove('active'); overlay.style.display = 'none';
-        };
+// ПРЕДЗАГРУЗЧИК
+const preloader = document.getElementById('preloader');
+const preloaderBar = document.getElementById('preloader-bar');
+const preloaderPercent = document.getElementById('preloader-percent');
+const glitchFinale = document.getElementById('glitch-finale');
+const glitchScanlines = document.getElementById('glitch-scanlines');
+const glitchBlocks = document.getElementById('glitch-blocks');
+const laughAudio = document.getElementById('laugh-audio');
+
+// Генерируем глитч-блоки
+for (let i = 0; i < 15; i++) {
+    const block = document.createElement('div');
+    block.className = 'glitch-block';
+    block.style.left = Math.random() * 100 + '%';
+    block.style.top = Math.random() * 100 + '%';
+    block.style.width = (Math.random() * 200 + 50) + 'px';
+    block.style.height = (Math.random() * 20 + 5) + 'px';
+    block.style.animationDelay = Math.random() * 0.3 + 's';
+    glitchBlocks.appendChild(block);
+}
+
+function startGlitchFinale() {
+    preloader.classList.add('hidden');
+    glitchFinale.classList.add('active');
+    glitchScanlines.classList.add('active');
+    glitchBlocks.classList.add('active');
+
+    // Запускаем звук
+    laughAudio.currentTime = 0;
+    laughAudio.play().then(() => {
+        // Когда звук закончился — убираем глитч
+        laughAudio.addEventListener('ended', () => {
+            glitchFinale.classList.remove('active');
+            glitchScanlines.classList.remove('active');
+            glitchBlocks.classList.remove('active');
+        }, { once: true });
+    }).catch(() => {
+        // Если не удалось — fallback: 3 секунды глитча
+        setTimeout(() => {
+            glitchFinale.classList.remove('active');
+            glitchScanlines.classList.remove('active');
+            glitchBlocks.classList.remove('active');
+        }, 3000);
     });
+}
 
-    // ШАРИНГ
-    function share(type) {
-        const url = encodeURIComponent(window.location.href), text = encodeURIComponent('XOR — Community & Tools');
-        if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
-        const links = { tg: `https://t.me/share/url?url=${url}&text=${text}`, tw: `https://x.com/intent/tweet?url=${url}&text=${text}`, wa: `https://wa.me/?text=${text}%20${url}` };
-        window.open(links[type], '_blank');
+let loadPercent = 0;
+const loadInterval = setInterval(() => {
+    loadPercent += Math.random() * 20 + 5;
+    if (loadPercent >= 100) {
+        loadPercent = 100;
+        preloaderBar.style.width = '100%';
+        preloaderPercent.textContent = '100%';
+        clearInterval(loadInterval);
+
+        // Ждём клика
+        const launch = () => {
+            startGlitchFinale();
+            document.removeEventListener('click', launch);
+            document.removeEventListener('touchstart', launch);
+        };
+        document.addEventListener('click', launch);
+        document.addEventListener('touchstart', launch);
+
+        preloaderPercent.textContent = 'TAP TO ENTER';
+        preloaderPercent.style.animation = 'preGlitch 0.5s infinite';
+    } else {
+        preloaderBar.style.width = loadPercent + '%';
+        preloaderPercent.textContent = Math.floor(loadPercent) + '%';
     }
+}, 250);
+
+// ПЕРЕВОД + ГЕОЛОКАЦИЯ
+const state = { lang: 'ru' };
+const dict = {
+    ru: {
+        m1: "СОЦ. СЕТИ",
+        tgTitle: "TELEGRAM", tgDesc: "Чтобы попасть в основной канал, переходи в наш переходник и кидайте заявку в основной, там вы найдёте много интересного, а может даже полезного.",
+        dcTitle: "DISCORD", dcDesc: "Есть какие-то вопросы либо проблемы? Обращайтесь в нашу техподдержку в Дискорде.",
+        cbTitle: "CRYPTO BOT", cbDesc: "Хотите поддержать автора? Вот ссылка на мой Crypto Bot, буду рад всему ☺️",
+        lBtn: "EN"
+    },
+    en: {
+        m1: "SOCIAL",
+        tgTitle: "TELEGRAM", tgDesc: "To join our main channel, go through our gateway and send a request to the main channel. There you'll find a lot of interesting and maybe even useful stuff.",
+        dcTitle: "DISCORD", dcDesc: "Have any questions or problems? Contact our support team on Discord.",
+        cbTitle: "CRYPTO BOT", cbDesc: "Want to support the author? Here's a link to my Crypto Bot, I'd appreciate anything ☺️",
+        lBtn: "RU"
+    }
+};
+function setLang(lang) {
+    state.lang = lang; const d = dict[lang];
+    document.getElementById('m1').innerText = d.m1;
+    document.getElementById('tg-title').innerText = d.tgTitle;
+    document.getElementById('tg-desc').innerText = d.tgDesc;
+    document.getElementById('dc-title').innerText = d.dcTitle;
+    document.getElementById('dc-desc').innerText = d.dcDesc;
+    document.getElementById('cb-title').innerText = d.cbTitle;
+    document.getElementById('cb-desc').innerText = d.cbDesc;
+    document.getElementById('l-btn').innerText = d.lBtn;
+}
+fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
+    setLang(['RU','BY','KZ','UA','AM','KG','UZ','TJ','MD','AZ','GE'].includes(data.country_code) ? 'ru' : 'en');
+}).catch(() => setLang('ru'));
+document.getElementById('l-btn').onclick = () => setLang(state.lang === 'ru' ? 'en' : 'ru');
+
+// МЕНЮ
+const burger = document.getElementById('burger'), drawer = document.getElementById('drawer'), overlay = document.getElementById('overlay');
+burger.onclick = overlay.onclick = () => {
+    drawer.classList.toggle('active');
+    overlay.style.display = drawer.classList.contains('active') ? 'block' : 'none';
+};
+document.querySelectorAll('.drawer-item').forEach(item => {
+    item.onclick = () => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(item.dataset.target).classList.add('active');
+        drawer.classList.remove('active'); overlay.style.display = 'none';
+    };
+});
+
+// ШАРИНГ
+function share(type) {
+    const url = encodeURIComponent(window.location.href), text = encodeURIComponent('XOR — Community & Tools');
+    if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
+    const links = { tg: `https://t.me/share/url?url=${url}&text=${text}`, tw: `https://x.com/intent/tweet?url=${url}&text=${text}`, wa: `https://wa.me/?text=${text}%20${url}` };
+    window.open(links[type], '_blank');
+                                       }
         </script>
 </body>
 </html>
