@@ -684,23 +684,83 @@ function startGlitchFinale() {
 let loadPercent = 0;
 const loadInterval = setInterval(() => {
     loadPercent += Math.random() * 20 + 5;
+// КУРСОР
+const cursor = document.getElementById('cursor');
+const cursorDot = document.getElementById('cursor-dot');
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
+});
+document.addEventListener('mousedown', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; });
+document.addEventListener('mouseup', () => { cursor.style.width = '20px'; cursor.style.height = '20px'; });
+document.querySelectorAll('a, button, .drawer-item, .link-btn, .lang-sw, .share-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+// ФОН
+const bg = document.getElementById('bg-animation');
+for (let i = 0; i < 12; i++) {
+    const orb = document.createElement('div'); orb.className = 'orb';
+    const size = Math.random() * 120 + 60;
+    orb.style.width = size + 'px'; orb.style.height = size + 'px';
+    orb.style.left = Math.random() * 100 + '%'; orb.style.top = Math.random() * 100 + '%';
+    orb.style.animationDelay = Math.random() * 8 + 's';
+    orb.style.animationDuration = (Math.random() * 6 + 6) + 's';
+    bg.appendChild(orb);
+}
+
+// ПРЕДЗАГРУЗЧИК (без звука)
+const preloader = document.getElementById('preloader');
+const preloaderBar = document.getElementById('preloader-bar');
+const preloaderPercent = document.getElementById('preloader-percent');
+const glitchFinale = document.getElementById('glitch-finale');
+const glitchScanlines = document.getElementById('glitch-scanlines');
+const glitchBlocks = document.getElementById('glitch-blocks');
+const laughAudio = document.getElementById('laugh-audio');
+
+// Глитч-блоки
+for (let i = 0; i < 15; i++) {
+    const block = document.createElement('div');
+    block.className = 'glitch-block';
+    block.style.left = Math.random() * 100 + '%';
+    block.style.top = Math.random() * 100 + '%';
+    block.style.width = (Math.random() * 200 + 50) + 'px';
+    block.style.height = (Math.random() * 20 + 5) + 'px';
+    block.style.animationDelay = Math.random() * 0.3 + 's';
+    glitchBlocks.appendChild(block);
+}
+
+function startGlitchFinale() {
+    preloader.classList.add('hidden');
+    glitchFinale.classList.add('active');
+    glitchScanlines.classList.add('active');
+    glitchBlocks.classList.add('active');
+
+    // Пробуем звук
+    laughAudio.currentTime = 0;
+    laughAudio.play().catch(() => {});
+
+    // Глитч на 2 секунды (не зависит от звука)
+    setTimeout(() => {
+        glitchFinale.classList.remove('active');
+        glitchScanlines.classList.remove('active');
+        glitchBlocks.classList.remove('active');
+    }, 2000);
+}
+
+// ЗАГРУЗКА
+let loadPercent = 0;
+const loadInterval = setInterval(() => {
+    loadPercent += Math.random() * 20 + 5;
     if (loadPercent >= 100) {
         loadPercent = 100;
         preloaderBar.style.width = '100%';
         preloaderPercent.textContent = '100%';
         clearInterval(loadInterval);
 
-        // Ждём клика
-        const launch = () => {
-            startGlitchFinale();
-            document.removeEventListener('click', launch);
-            document.removeEventListener('touchstart', launch);
-        };
-        document.addEventListener('click', launch);
-        document.addEventListener('touchstart', launch);
-
-        preloaderPercent.textContent = 'TAP TO ENTER';
-        preloaderPercent.style.animation = 'preGlitch 0.5s infinite';
+        // Автозапуск без ожидания клика
+        setTimeout(startGlitchFinale, 400);
     } else {
         preloaderBar.style.width = loadPercent + '%';
         preloaderPercent.textContent = Math.floor(loadPercent) + '%';
@@ -761,7 +821,7 @@ function share(type) {
     if (type === 'cp') { navigator.clipboard.writeText(window.location.href); return; }
     const links = { tg: `https://t.me/share/url?url=${url}&text=${text}`, tw: `https://x.com/intent/tweet?url=${url}&text=${text}`, wa: `https://wa.me/?text=${text}%20${url}` };
     window.open(links[type], '_blank');
-                                       }
+}
         </script>
 </body>
 </html>
