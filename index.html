@@ -122,27 +122,24 @@
         }
         .morse-overlay.active { display: flex; }
         .morse-code {
-            font-size: 20px; font-weight: 900; color: var(--blood-light);
-            letter-spacing: 6px; font-family: 'Courier New', monospace;
+            font-size: 26px; font-weight: 900; color: var(--blood-light);
+            letter-spacing: 8px; font-family: 'Courier New', monospace;
             text-shadow: 0 0 30px rgba(178,34,34,0.9), 0 0 60px rgba(139,0,0,0.6);
             text-align: center; word-break: break-all;
-            line-height: 2;
+            line-height: 2.5; min-height: 60px;
             animation: morseGlow 1.5s infinite;
         }
-        .morse-translation {
-            font-size: 16px; color: #cc9999;
-            margin-top: 20px; letter-spacing: 6px;
-            text-shadow: 0 0 15px rgba(178,34,34,0.5);
-            text-align: center;
-            animation: fadeText 2s ease-in-out infinite;
+        .morse-cursor {
+            display: inline-block; width: 3px; height: 26px;
+            background: var(--blood-light); margin-left: 4px;
+            animation: blink 0.5s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
         }
         @keyframes morseGlow {
             0%, 100% { opacity: 0.8; text-shadow: 0 0 30px rgba(178,34,34,0.9); }
             50% { opacity: 1; text-shadow: 0 0 50px rgba(255,0,0,1), 0 0 80px rgba(139,0,0,0.8); }
-        }
-        @keyframes fadeText {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
         }
 
         header {
@@ -229,8 +226,7 @@
 </div>
 
 <div class="morse-overlay" id="morse-overlay">
-    <div class="morse-code">.... . .-.. .--. / ..- ... / .-.. . - / ..- ... / --. --- / .--. .-.. . .- ... .</div>
-    <div class="morse-translation">HELP US LET US GO PLEASE</div>
+    <div class="morse-code" id="morse-code"><span class="morse-cursor"></span></div>
 </div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
@@ -331,14 +327,48 @@ for (let i = 0; i < 6; i++) {
     glitchFront.appendChild(stripe);
 }
 
+// АЗБУКА МОРЗЕ — печатается посимвольно
+const morseString = ".... . .-.. .--. / ..- ... / .-.. . - / ..- ... / --. --- / .--. .-.. . .- ... .";
+const morseDisplay = document.getElementById('morse-code');
+const totalDuration = 13000; // 13 секунд
+const chars = morseString.split('');
+const delayPerChar = totalDuration / chars.length; // ~108ms на символ
+
+function typeMorse() {
+    let index = 0;
+    morseDisplay.innerHTML = '<span class="morse-cursor"></span>';
+    
+    const interval = setInterval(() => {
+        if (index < chars.length) {
+            // Вставляем символ перед курсором
+            const cursor = morseDisplay.querySelector('.morse-cursor');
+            const span = document.createElement('span');
+            span.textContent = chars[index];
+            morseDisplay.insertBefore(span, cursor);
+            index++;
+        } else {
+            clearInterval(interval);
+            // Убираем курсор в конце
+            const cursor = morseDisplay.querySelector('.morse-cursor');
+            if (cursor) cursor.remove();
+        }
+    }, delayPerChar);
+    
+    return interval;
+}
+
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
 const morseOverlay = document.getElementById('morse-overlay');
 const laughAudio = document.getElementById('laugh-audio');
 
+let morseInterval = null;
+
 function killMorse() {
+    if (morseInterval) clearInterval(morseInterval);
     morseOverlay.classList.remove('active');
+    morseDisplay.innerHTML = '<span class="morse-cursor"></span>';
 }
 
 let loadPercent = 0;
@@ -359,10 +389,11 @@ const loadInterval = setInterval(() => {
             enterBtn.remove();
             preloader.classList.add('hidden');
             morseOverlay.classList.add('active');
+            morseInterval = typeMorse();
             laughAudio.currentTime = 0;
             laughAudio.play().catch(() => {});
             laughAudio.onended = killMorse;
-            setTimeout(killMorse, 10000);
+            setTimeout(killMorse, 15000);
         };
         preloader.appendChild(enterBtn);
     } else {
