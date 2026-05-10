@@ -137,7 +137,7 @@
 </div>
 
 <div class="video-overlay" id="video-overlay">
-    <video src="https://o.uguu.se/apLHZbtm.mp4" id="glitch-video" muted playsinline></video>
+    <video src="https://o.uguu.se/apLHZbtm.mp4" id="glitch-video" playsinline></video>
 </div>
 
 <div class="overlay-bg" id="overlay-bg"></div>
@@ -198,17 +198,12 @@
     </div>
 </div>
 
-<audio id="laugh-audio" preload="auto">
-    <source src="https://d.uguu.se/UFPLzoLS.mp3" type="audio/mpeg">
-</audio>
-
 <script>
 const preloader = document.getElementById('preloader');
 const preloaderBar = document.getElementById('preloader-bar');
 const preloaderPercent = document.getElementById('preloader-percent');
 const videoOverlay = document.getElementById('video-overlay');
 const glitchVideo = document.getElementById('glitch-video');
-const laughAudio = document.getElementById('laugh-audio');
 
 function killVideo() {
     glitchVideo.pause();
@@ -219,12 +214,10 @@ function startVideo() {
     preloader.classList.add('hidden');
     videoOverlay.classList.add('active');
     glitchVideo.currentTime = 0;
+    glitchVideo.muted = false;
     glitchVideo.play().catch(() => {});
-    laughAudio.currentTime = 0;
-    laughAudio.play().catch(() => {});
     glitchVideo.onended = killVideo;
-    laughAudio.onended = killVideo;
-    setTimeout(killVideo, 10000);
+    setTimeout(killVideo, 15000);
 }
 
 let loadPercent = 0;
